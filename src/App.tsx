@@ -1,13 +1,14 @@
 import './App.css'
+import AppRoutes from "./routes/AppRoutes.tsx";
 
 function App() {
 
 
   return (
     <>
-      <h1>Frontend Inventaire Maison</h1>
+        <AppRoutes/>
     </>
   )
 }
 
-export default App
+export default App;
