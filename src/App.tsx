@@ -5,9 +5,15 @@ function App() {
 
 
   return (
-    <>
+    <div className="sm:max-w-xl mx-auto 
+    border-black border
+      min-h-dvh
+      justify-center
+      flex
+      flex-col
+    ">
         <AppRoutes/>
-    </>
+    </div>
   )
 }
 
