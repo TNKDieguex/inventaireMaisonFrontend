@@ -31,8 +31,10 @@ axiosClient.interceptors.response.use(
         console.error('API Error: ', error.response?.data || error.message);
 
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            if (!error.config?.url?.includes('/utilisateurs/connexion')) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
