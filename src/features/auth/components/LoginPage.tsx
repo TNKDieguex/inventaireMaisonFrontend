@@ -2,7 +2,9 @@ import FormInputs from "./FormInputs.tsx";
 import {type SyntheticEvent, useState} from "react";
 import axiosClient from "../../../api/axiosClient.ts";
 import {useNavigate} from "react-router-dom";
-import type {AuthResponseDto, LoginRequestDto} from "../types";
+import type {AuthResponseDto, ErreurResponseDto, LoginRequestDto} from "../types";
+import axios from "axios";
+import Button from "../../../components/Button.tsx";
 
 const LoginPage = () => {
     const [values, setValues] = useState<LoginRequestDto>(
@@ -10,10 +12,14 @@ const LoginPage = () => {
             courriel: '',
             motPasse: ''
         }
-    )
+    );
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const inputs: {id: number, name: keyof LoginRequestDto, type: string, placeholder: string}[] = [
+    const inputs: {
+        id: number,
+        name: keyof LoginRequestDto,
+        type: string,
+        placeholder: string}[] = [
         {
             id:1,
             name:"courriel",
@@ -45,12 +51,13 @@ const LoginPage = () => {
                 motPasse: ''
             })
             navigate('/dashboard');
-        } catch (error: any) {
-            if (error.response && error.response.status === 404)
-                setError('Courriel ou mot de passe incorrect');
-            else
-                setError('Échec de la connexion. Veuillez réessayer plus tard.');
-            console.error(error);
+        } catch (erreur: unknown) {
+            if (axios.isAxiosError<ErreurResponseDto>(erreur)){
+                const messageDuBackend = erreur.response?.data?.message;
+                setError(messageDuBackend || 'Échec de la connexion. Veuillez réessayer.')
+            }else{
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.')
+            }
         }
     }
     const isValid = () =>{
@@ -62,15 +69,15 @@ const LoginPage = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 items-center text-center
-            border-black border
-            p-6 rounded
-            m-6
-        ">
-                <h1>Login</h1>
-                <form onSubmit={handleLogin}
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100 text-center">
+                <div>
+                    <h1 className="text-3xl font-extrabold text-gray-900">Nom de l'application</h1>
+                    <p className="mt-2 text-sm text-gray-600">Bienvenue!!</p>
+                </div>
+            <form onSubmit={handleLogin}
                 className="grid gap-2 w-full max-w-sm mx-auto">
-                    {inputs.map((input) => (
+                {inputs.map((input) => (
                             <FormInputs
                                 key={input.id}
                                 placeholder={input.placeholder}
@@ -80,15 +87,26 @@ const LoginPage = () => {
                                 name={input.name}
                             />
                     ))}
-                    {error && <p className="text-red-500">{error}</p>}
-                    <button type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded
-                        hover:bg-blue-600
-                        "
-                    >Login</button>
+                    {error && (
+                        <p className="text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200">
+                            {error}
+                        </p>
+                    )}
+                    <Button type={"submit"} variant={"primary"} fullWidth
+                        children={"Se connecter"}
+                    />
+                    <Button type={"button"} variant={"outline"} fullWidth
+                            onClick={
+                                () => {
+                                    navigate('/register');
+                                }
+                            }
+                            children={"Créer un compte"}
+                    />
                 </form>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default LoginPage;
