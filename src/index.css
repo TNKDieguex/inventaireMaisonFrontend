@@ -1,18 +1,29 @@
+@import "tailwindcss";
 @tailwind utilities;
 
-@layer components {
-    .information-div {
-        @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100;
-    }
 
-    .titre {
-        @apply text-2xl font-bold text-gray-800 mb-4;
-    }
+.information-div {
+    @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100
+}
+.titre {
+    @apply text-2xl font-bold text-gray-800 mb-4
+}
+.sous-titre {
+    @apply text-xl font-semibold text-gray-800 mb-2
+}
+.texte{
+    @apply font-semibold text-gray-800
+}
+.page-container {
+    @apply flex flex-col items-center justify-center h-full
+}
 
-    .sous-titre {
-        @apply text-xl font-semibold text-gray-800 mb-2;
-    }
-    .page-container {
-        @apply flex flex-col items-center justify-center h-full;
-    }
+.item{
+    @apply p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50
+}
+.error{
+    @apply text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200
+}
+.information-div-center{
+    @apply flex items-center justify-center h-full w-full
 }
