@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import type {AuthResponseDto, ErreurResponseDto, LoginRequestDto} from "../types";
 import axios from "axios";
 import Button from "../../../components/Button.tsx";
+import {getFamilleIdFromToken} from "../../../utils/jwtUtils.ts";
 
 const LoginPage = () => {
     const [values, setValues] = useState<LoginRequestDto>(
@@ -50,7 +51,13 @@ const LoginPage = () => {
                 courriel: '',
                 motPasse: ''
             })
-            navigate('/dashboard');
+            const familleUuid = getFamilleIdFromToken(token);
+
+            if (familleUuid) {
+                navigate('/dashboard');
+            } else {
+                navigate('/famille');
+            }
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)){
                 const messageDuBackend = erreur.response?.data?.message;
