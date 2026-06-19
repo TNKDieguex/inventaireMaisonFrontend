@@ -3,6 +3,7 @@ import LoginPage from "../features/auth/components/LoginPage.tsx";
 import RegisterPage from "../features/auth/components/RegisterPage.tsx";
 import ProtectedRoute from "../components/ProtectedRoute.tsx";
 import ProduitDashboard from "../features/produits/components/ProduitDashboard.tsx";
+import FamillePage from "../features/famille/components/FamillePage.tsx";
 
 const AppRoutes = () => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -13,11 +14,14 @@ const AppRoutes = () => {
                 <Route path={"/login"} element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
                 <Route path={"/register"} element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
 
-                <Route element={<ProtectedRoute/>}>
-                    <Route path={"/dashboard"} element={<ProduitDashboard/>} />
+                <Route element={<ProtectedRoute checkFamille={false} />}>
+                    <Route path="/famille" element={<FamillePage />} />
+                </Route>
+                <Route element={<ProtectedRoute checkFamille={true} />}>
+                    <Route path="/dashboard" element={<ProduitDashboard />} />
                 </Route>
 
-                <Route path={"*"} element={<Navigate to={"/login"} replace />} />
+                <Route path={"*"} element={<Navigate to={"/login"} replace />}/>
             </Routes>
         </BrowserRouter>
     )
