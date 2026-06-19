@@ -5,3 +5,7 @@ export interface FamilleDto {
     uuid: string;
     utilisateurs: UtilisateurDto[]
 }
+
+export interface CreationFamilleDto {
+    nomFamille: string;
+}
