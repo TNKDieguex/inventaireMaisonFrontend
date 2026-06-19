@@ -4,6 +4,8 @@ import RegisterPage from "../features/auth/components/RegisterPage.tsx";
 import ProtectedRoute from "../components/ProtectedRoute.tsx";
 import ProduitDashboard from "../features/produits/components/ProduitDashboard.tsx";
 import FamillePage from "../features/famille/components/FamillePage.tsx";
+import FamilleInscription from "../features/famille/components/FamilleInscription.tsx";
+import FamilleCreation from "../features/famille/components/FamilleCreation.tsx";
 
 const AppRoutes = () => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -16,6 +18,8 @@ const AppRoutes = () => {
 
                 <Route element={<ProtectedRoute checkFamille={false} />}>
                     <Route path="/famille" element={<FamillePage />} />
+                    <Route path="/famille/creation" element={<FamilleCreation />} />
+                    <Route path="/famille/inscription" element={<FamilleInscription />} />
                 </Route>
                 <Route element={<ProtectedRoute checkFamille={true} />}>
                     <Route path="/dashboard" element={<ProduitDashboard />} />
