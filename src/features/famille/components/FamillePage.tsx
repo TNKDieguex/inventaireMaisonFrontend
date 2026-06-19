@@ -7,44 +7,52 @@ import Button from "../../../components/Button.tsx";
 import {useNavigate} from "react-router-dom";
 
 const FamillePage = () => {
-    const [familleInfo, setFamilleInfo] = useState<FamilleDto>({
-        nomFamille: '',
-        uuid: '',
-        utilisateurs: []
+    const [familleUuid, setFamilleUuid] = useState<string | null>(()=>{
+        const token = localStorage.getItem('token');
+        if (token) {
+            return getFamilleIdFromToken(token);
+        }
+        return null;
     });
-    const [familleUuid, setFamilleUuid] = useState<string | null>(null);
+    const [familleInfo, setFamilleInfo] = useState<FamilleDto | undefined>(() => {
+        if (familleUuid) {
+            const cachedInfo = sessionStorage.getItem(`famille_info_${familleUuid}`);
+            return cachedInfo ? JSON.parse(cachedInfo) : undefined;
+        }
+        return undefined;
+    });
     const [isUuidVisible, setIsUuidVisible] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const uuid = getFamilleIdFromToken(token);
-            if (uuid) {
-                setFamilleUuid(uuid);
-            }
-        }
-    }, []);
+    const [cooldown, setCooldown] = useState(0);
 
     useEffect(() => {
-        if (familleUuid) {
-            const cachedInfo = sessionStorage.getItem(`famille_info_${familleUuid}`);
-            if (cachedInfo) {
-                setFamilleInfo(JSON.parse(cachedInfo));
-            }else{
-                axiosClient.get<FamilleDto>('/utilisateurs/familles/info')
-                    .then(response => {
-                        setFamilleInfo(response.data);
-                        sessionStorage.setItem(`famille_info_${familleUuid}`, JSON.stringify(response.data));
-                    })
-                    .catch(error => {
-                        console.error("Erreur lors de la récupération des membres:", error);
-                    });
-            }
-
+        if (cooldown > 0) {
+            const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+            return () => clearTimeout(timer);
         }
-    }, [familleUuid]);
+    }, [cooldown]);
+
+    useEffect(() => {
+        if (familleUuid && !familleInfo) {
+            axiosClient.get<FamilleDto>('/utilisateurs/familles/info')
+                .then(response => {
+                    setFamilleInfo(response.data);
+                    sessionStorage.setItem(`famille_info_${familleUuid}`, JSON.stringify(response.data));
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la récupération des membres:", error);
+                });
+        }
+    }, [familleUuid, familleInfo]);
+
+    const handleRefresh = () => {
+        if (cooldown > 0 || !familleUuid) return;
+        sessionStorage.removeItem(`famille_info_${familleUuid}`);
+        setFamilleInfo(undefined);
+        setCooldown(180);
+    };
 
     const handleCopy = () => {
         if (familleUuid) {
@@ -105,7 +113,20 @@ const FamillePage = () => {
             </div>
 
             <div className="information-div">
-                <h2 className="sous-titre">Membres de votre famille</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="sous-titre mb-0">Membres de votre famille</h2>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleRefresh}
+                        disabled={cooldown > 0}
+                        children={cooldown > 0
+                            ? `Attendre ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`
+                            : "Actualiser"
+                        }
+                    />
+                </div>
+
                 <div className="space-y-3">
                     {familleInfo?.utilisateurs && familleInfo.utilisateurs.length > 0 ? (
                         familleInfo.utilisateurs.map((utilisateur) => (
