@@ -2,9 +2,10 @@ import {type SyntheticEvent, useState} from "react";
 import type {CreationUtilisateur, ErreurResponseDto, UtilisateurData, UtilisateurDto} from "../types";
 import {useNavigate} from "react-router-dom";
 import Button from "../../../components/Button.tsx";
-import FormInputs from "./FormInputs.tsx";
+import FormInputs from "../../../components/FormInputs.tsx";
 import axiosClient from "../../../api/axiosClient.ts";
 import axios from "axios";
+import LoadingModal from "../../../components/LoadingModal.tsx";
 
 const RegisterPage = () => {
     const [values, setValues] = useState<CreationUtilisateur>({
@@ -16,6 +17,7 @@ const RegisterPage = () => {
 
     const [error, setError] = useState('');
     const [disableButton, setDisableButton] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const inputs: { id: number; name: keyof CreationUtilisateur; type: string; placeholder: string;}[] = [
@@ -29,9 +31,9 @@ const RegisterPage = () => {
         e.preventDefault();
         if (!isValid()) return;
         setError('');
-
         try {
             setDisableButton(true);
+            setIsLoading(true);
             const payload: UtilisateurData = {
                 nom: values.nom,
                 courriel: values.courriel,
@@ -51,6 +53,8 @@ const RegisterPage = () => {
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
             console.error(erreur);
+        }finally {
+            setIsLoading(false);
         }
     };
 
@@ -87,7 +91,7 @@ const RegisterPage = () => {
                     <p className="mt-2 text-sm text-gray-600">Écrivez vos informations pour commencer</p>
                 </div>
             <form onSubmit={handleRegister}
-                  className="grid gap-2 w-full max-w-sm mx-auto">
+                  className="forms-style">
                 {inputs.map((input) => (
                     <FormInputs
                         key={input.id}
@@ -109,6 +113,7 @@ const RegisterPage = () => {
                 <Button type="button" variant="outline" fullWidth onClick={() => navigate('/login')}
                     children={"Déjà un compte? Se connecter"}/>
             </form>
+                {isLoading && <LoadingModal title={"Création de votre compte..."}/>}
         </div>
     </div>
     );
