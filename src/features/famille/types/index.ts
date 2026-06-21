@@ -9,3 +9,7 @@ export interface FamilleDto {
 export interface CreationFamilleDto {
     nomFamille: string;
 }
+
+export interface rejoindreFamilleDto {
+    familleUuid: string;
+}

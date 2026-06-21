@@ -3,7 +3,7 @@
 
 
 .information-div {
-    @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100
+    @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full
 }
 .titre {
     @apply text-2xl font-bold text-gray-800 mb-4
@@ -26,4 +26,13 @@
 }
 .information-div-center{
     @apply flex items-center justify-center h-full w-full
+}
+.forms-style{
+    @apply grid gap-2 w-full max-w-sm mx-auto
+}
+
+/*animation shimmer*/
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
 }
