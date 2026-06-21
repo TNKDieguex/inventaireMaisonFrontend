@@ -1,4 +1,4 @@
-import FormInputs from "./FormInputs.tsx";
+import FormInputs from "../../../components/FormInputs.tsx";
 import {type SyntheticEvent, useState} from "react";
 import axiosClient from "../../../api/axiosClient.ts";
 import {useNavigate} from "react-router-dom";
@@ -6,6 +6,7 @@ import type {AuthResponseDto, ErreurResponseDto, LoginRequestDto} from "../types
 import axios from "axios";
 import Button from "../../../components/Button.tsx";
 import {getFamilleIdFromToken} from "../../../utils/jwtUtils.ts";
+import LoadingModal from "../../../components/LoadingModal.tsx";
 
 const LoginPage = () => {
     const [values, setValues] = useState<LoginRequestDto>(
@@ -15,6 +16,8 @@ const LoginPage = () => {
         }
     );
     const [error, setError] = useState('');
+    const [disableButton, setDisableButton] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const inputs: {
         id: number,
@@ -35,7 +38,6 @@ const LoginPage = () => {
         }
     ]
 
-
     const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!isValid()) {
@@ -44,6 +46,8 @@ const LoginPage = () => {
         }
         setError('');
         try {
+            setDisableButton(true);
+            setIsLoading(true);
             const response = await axiosClient.post<AuthResponseDto>('/utilisateurs/connexion', values);
             const token = response.data.token;
             localStorage.setItem('token', token);
@@ -59,12 +63,15 @@ const LoginPage = () => {
                 navigate('/famille');
             }
         } catch (erreur: unknown) {
+            setDisableButton(false);
             if (axios.isAxiosError<ErreurResponseDto>(erreur)){
                 const messageDuBackend = erreur.response?.data?.message;
                 setError(messageDuBackend || 'Échec de la connexion. Veuillez réessayer.')
             }else{
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.')
             }
+        }finally {
+            setIsLoading(false);
         }
     }
     const isValid = () =>{
@@ -79,11 +86,11 @@ const LoginPage = () => {
         <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
             <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100 text-center">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-gray-900">Nom de l'application</h1>
-                    <p className="mt-2 text-sm text-gray-600">Bienvenue!!</p>
+                    <h1 className="text-3xl font-extrabold text-gray-900">Inventaire Maison</h1>
+                    <p className="mt-2 text-sm text-gray-600">Bienvenue!</p>
                 </div>
             <form onSubmit={handleLogin}
-                className="grid gap-2 w-full max-w-sm mx-auto">
+                className="forms-style">
                 {inputs.map((input) => (
                             <FormInputs
                                 key={input.id}
@@ -99,10 +106,11 @@ const LoginPage = () => {
                             {error}
                         </p>
                     )}
-                    <Button type={"submit"} variant={"primary"} fullWidth
-                        children={"Se connecter"}
+                    <Button type={"submit"} variant={"primary"} fullWidth disabled={disableButton}
+                        children={disableButton ? "Connexion en cours... Veuillez patienter..." : "Se connecter"}
                     />
                     <Button type={"button"} variant={"outline"} fullWidth
+                            disabled={disableButton}
                             onClick={
                                 () => {
                                     navigate('/register');
@@ -111,6 +119,7 @@ const LoginPage = () => {
                             children={"Créer un compte"}
                     />
                 </form>
+                {isLoading && <LoadingModal title={"Connexion en cours..."}/>}
             </div>
         </div>
     );
