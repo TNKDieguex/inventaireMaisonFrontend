@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 
 const NavBar = () => {
     return (
-        <nav className="navbar flex justify-between items-center p-4">
+        <nav className="navbar navbar-body">
             <ul className="navbar-list flex justify-between gap-4 ">
                 <li><Link className={"navbar-link"} to={"/dashboard"}>Inicio</Link></li>
                 <li><Link className={"navbar-link"} to={"/dashboard"}>Dashboard</Link></li>
