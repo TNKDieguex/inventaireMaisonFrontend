@@ -23,18 +23,22 @@ const LoginPage = () => {
         id: number,
         name: keyof LoginRequestDto,
         type: string,
-        placeholder: string}[] = [
+        placeholder: string,
+        label: string
+    }[] = [
         {
             id:1,
             name:"courriel",
             type:"email",
-            placeholder:"Courriel"
+            placeholder:"vous@exemple.com",
+            label: "Courriel"
         },
         {
             id:2,
             name:"motPasse",
             type:"password",
-            placeholder:"Mot de passe"
+            placeholder:"•••••",
+            label: "Mot de passe"
         }
     ]
 
@@ -83,11 +87,11 @@ const LoginPage = () => {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100 text-center">
+        <div className="form-body">
+            <div className="form-body-enfant">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-gray-900">Inventaire Maison</h1>
-                    <p className="mt-2 text-sm text-gray-600">Bienvenue!</p>
+                    <h1 className="text-3xl font-extrabold text-blue-haze-title">Inventaire Maison</h1>
+                    <p className="mt-2 text-sm text-blue-haze-600">Bienvenue!</p>
                 </div>
             <form onSubmit={handleLogin}
                 className="forms-style">
@@ -99,6 +103,7 @@ const LoginPage = () => {
                                 value={values[input.name]}
                                 onChange={onChange}
                                 name={input.name}
+                                label={input.label}
                             />
                     ))}
                     {error && (
