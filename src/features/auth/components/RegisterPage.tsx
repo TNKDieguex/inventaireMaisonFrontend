@@ -1,4 +1,4 @@
-import {type SyntheticEvent, useState} from "react";
+import React, {type SyntheticEvent, useState} from "react";
 import type {CreationUtilisateur, ErreurResponseDto, UtilisateurData, UtilisateurDto} from "../types";
 import {useNavigate} from "react-router-dom";
 import Button from "../../../components/Button.tsx";
@@ -20,11 +20,15 @@ const RegisterPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const inputs: { id: number; name: keyof CreationUtilisateur; type: string; placeholder: string;}[] = [
-        { id: 1, name: "nom", type: "text", placeholder: "Nom"},
-        { id: 2, name: "courriel", type: "email", placeholder: "Courriel"},
-        { id: 3, name: "motPasse", type: "password", placeholder: "Mot de passe"},
-        { id: 4, name: "motPasseConfirmation", type: "password", placeholder: "Confirmation de mot de passe"}
+    const inputs: { id: number,
+        name: keyof CreationUtilisateur,
+        type: string,
+        placeholder: string,
+        label: string}[] = [
+        { id: 1, name: "nom", type: "text", placeholder: "Laufey Lín Bing", label: "Nom"},
+        { id: 2, name: "courriel", type: "email", placeholder: "vous@exemple.com" ,label:"Courriel"},
+        { id: 3, name: "motPasse", type: "password", placeholder: "•••••", label: "Mot de passe"},
+        { id: 4, name: "motPasseConfirmation", type: "password", placeholder: "•••••",label: "Confirmation de mot de passe"}
     ];
 
     const handleRegister = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -84,8 +88,8 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100 text-center">
+        <div className="form-body">
+            <div className="form-body-enfant">
                 <div>
                     <h1 className="text-3xl font-extrabold text-gray-900">Créer un compte</h1>
                     <p className="mt-2 text-sm text-gray-600">Écrivez vos informations pour commencer</p>
@@ -100,10 +104,11 @@ const RegisterPage = () => {
                         value={values[input.name]}
                         onChange={onChange}
                         name={input.name}
+                        label={input.label}
                     />
                 ))}
                 {error && (
-                    <p className="text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200">
+                    <p className="error">
                         {error}
                     </p>
                 )}

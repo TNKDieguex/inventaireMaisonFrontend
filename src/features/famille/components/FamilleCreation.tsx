@@ -1,7 +1,7 @@
 import FormInputs from "../../../components/FormInputs.tsx";
 import type {CreationFamilleDto} from "../types";
 import Button from "../../../components/Button.tsx";
-import {type SyntheticEvent, useState} from "react";
+import React, {type SyntheticEvent, useState} from "react";
 import axiosClient from "../../../api/axiosClient.ts";
 import type {AuthResponseDto, ErreurResponseDto} from "../../auth/types";
 import axios from "axios";
@@ -21,12 +21,14 @@ const FamilleCreation = () => {
         id: number,
         name: keyof CreationFamilleDto,
         type: string,
-        placeholder: string}[] = [
+        placeholder: string,
+        label: string}[] = [
         {
             id:1,
             name:"nomFamille",
             type:"text",
-            placeholder:"Nom de famille"
+            placeholder:"Famille...",
+            label: "Nom de famille"
         }]
 
     const creationFamilleHandle = async (e: SyntheticEvent<HTMLFormElement>)=>{
@@ -76,6 +78,7 @@ const FamilleCreation = () => {
                                 value={values[input.name]}
                                 onChange={onChange}
                                 name={input.name}
+                                label={input.label}
                             />
                         ))}
                         {error && (

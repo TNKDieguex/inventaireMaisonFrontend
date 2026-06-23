@@ -1,5 +1,5 @@
 import type {rejoindreFamilleDto} from "../types";
-import {type SyntheticEvent, useState} from "react";
+import React, {type SyntheticEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import FormInputs from "../../../components/FormInputs.tsx";
 import Button from "../../../components/Button.tsx";
@@ -21,12 +21,14 @@ const FamilleInscription = () => {
         id: number,
         name: keyof rejoindreFamilleDto,
         type: string,
-        placeholder: string}[] = [
+        placeholder: string,
+        label: string}[] = [
         {
             id: 1,
             name: "familleUuid",
             type: "text",
-            placeholder: "Code d'invitation"
+            placeholder: "XXXXXX-XXXX-XXXX-XXXX-XXXXXX",
+            label: "Code d'invitation"
         }]
     const rejoindreFamilleHandle = async (e: SyntheticEvent<HTMLFormElement>)=>{
         e.preventDefault();
@@ -75,6 +77,7 @@ const FamilleInscription = () => {
                             value={values[input.name]}
                             onChange={onChange}
                             name={input.name}
+                            label={input.label}
                         />
                     ))}
                     {error && (
