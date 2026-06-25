@@ -1,15 +1,33 @@
 import React, {useState} from "react";
+import Button from "./Button.tsx";
 
 const FormInputs = ({placeholder, type, value, onChange, name, label}:{
     placeholder: string,
     type: string,
-    value: string,
+    value: string|number,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     name: string,
-    label: string
+    label: string,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const currentType = type === 'password' && showPassword ? 'text' : type;
+    const isNumberType = type === 'number'
+    const handleStep = (amount: number) => {
+        const valorActual = value === '' ? 0 : Number(value);
+        const nuevoValor = Math.max(0, valorActual + amount);
+
+        onChange({
+            target: {
+                name,
+                value: String(nuevoValor)
+            }
+        } as React.ChangeEvent<HTMLInputElement>);
+    };
+    const classesInput = `text-slate-700 border rounded-md px-3 py-2 ease shadow-sm outline-none transition-all w-full
+        ${isNumberType
+        ? 'border-blue-haze-400 bg-blue-haze-50 text-center font-mono font-bold focus:border-blue-haze-600 focus:bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+        : 'border-slate-500 bg-blue-haze-200 focus:border-blue-haze-500 focus:bg-blue-haze-200'
+    } ${type === 'password' ? 'pr-12' : ''}`;
 
     return (
         <div className={"w-full flex flex-col relative mb-3"}>
@@ -17,8 +35,28 @@ const FormInputs = ({placeholder, type, value, onChange, name, label}:{
                 {label}
             </label>
             <div className="relative w-full">
+            {isNumberType ? (
+                <div className="flex pt-3 px-1 items-center w-full border border-blue-haze-400 bg-blue-haze-200 rounded-md shadow-sm focus-within:border-blue-haze-600  transition-all overflow-hidden">
+                    <Button type={"button"} variant={"primary"}
+                    children={"-"} onClick={()=>{handleStep( - 1)}}
+                    />
+
+                    <input
+                        type="number"
+                        placeholder={placeholder}
+                        className="w-full text-center font-mono font-bold py-2 px-1 text-slate-700 bg-transparent border-none outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                    />
+                    <Button type={"button"} variant={"primary"}
+                            children={"+"} onClick={()=>{handleStep( + 1)}}
+                    />
+                </div>
+            ) : (
+                <>
                 <input type={currentType} placeholder={placeholder}
-                       className=" w-full text-slate-700 border bg-blue-haze-200 rounded-md px-3 py-2 ease shadow-sm focus:bg-blue-haze-200"
+                       className={classesInput}
                        name={name}
                        value={value}
                        onChange={onChange}
@@ -44,6 +82,7 @@ const FormInputs = ({placeholder, type, value, onChange, name, label}:{
                             )}
                     </button>
                 )}
+                </>)}
             </div>
         </div>
     );
