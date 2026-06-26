@@ -1,17 +1,19 @@
 import React, {useState} from "react";
 import Button from "./Button.tsx";
 
-const FormInputs = ({placeholder, type, value, onChange, name, label}:{
+const FormInputs = ({placeholder, type, value, onChange, name, label, maxLength}:{
     placeholder: string,
     type: string,
     value: string|number,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     name: string,
     label: string,
+    maxLength?: number
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const currentType = type === 'password' && showPassword ? 'text' : type;
     const isNumberType = type === 'number'
+    const currentLength = String(value ?? '').length;
     const handleStep = (amount: number) => {
         const valorActual = value === '' ? 0 : Number(value);
         const nuevoValor = Math.max(0, valorActual + amount);
@@ -27,7 +29,7 @@ const FormInputs = ({placeholder, type, value, onChange, name, label}:{
         ${isNumberType
         ? 'border-blue-haze-400 bg-blue-haze-50 text-center font-mono font-bold focus:border-blue-haze-600 focus:bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
         : 'border-slate-500 bg-blue-haze-200 focus:border-blue-haze-500 focus:bg-blue-haze-200'
-    } ${type === 'password' ? 'pr-12' : ''}`;
+    } ${type === 'password' ? 'pr-12' : ''} ${maxLength ? 'pb-5' : ''}`;
 
     return (
         <div className={"w-full flex flex-col relative mb-3"}>
@@ -60,8 +62,15 @@ const FormInputs = ({placeholder, type, value, onChange, name, label}:{
                        name={name}
                        value={value}
                        onChange={onChange}
-
+                       maxLength={maxLength}
                 />
+                    {maxLength && (
+                        <span className={`absolute right-2.5 bottom-1 text-xs font-mono tracking-tight select-none pointer-events-none transition-colors ${
+                            currentLength >= maxLength ? 'text-red-600 font-bold' : 'text-slate-500'
+                        }`}>
+                                {currentLength} / {maxLength}
+                            </span>
+                    )}
                 {type === 'password' && (
                     <button
                         type="button"
