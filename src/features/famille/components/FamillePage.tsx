@@ -105,62 +105,62 @@ const FamillePage = () => {
     }
 
     return (
-        <div className="space-y-4">
-            <h1 className="titre">{familleInfo?.nomFamille || "Chargement..."}</h1>
+        <div className="dashboard-screen">
+            <h1 className="dashboard-titre">{familleInfo?.nomFamille || "Chargement..."}</h1>
             {error && (
                 <p className="error">
                     {error}
                 </p>
             )}
             {!error && (<>
-            <div className="information-div">
-                <h2 className="sous-titre">Code d'invitation de la famille</h2>
-                <div className="flex items-center gap-4">
-                    <p
-                        className={`text-gray-700 text-lg select-all font-mono bg-gray-100 p-2 rounded ${!isUuidVisible ? 'blur-sm' : ''}`}
-                    >
-                        {familleUuid || "Chargement..."}
-                    </p>
-                    <div className="space-y-2">
-                        <Button type={"button"} variant={"outline"} fullWidth
-                            onClick={() => setIsUuidVisible(!isUuidVisible)}
-                                children={isUuidVisible ? 'Cacher' : 'Afficher'}
-                        />
-                        <Button type={"button"} variant={"primary"} fullWidth
-                            onClick={handleCopy}
-                                children={copySuccess ? 'Copié!' : 'Copier'}
-                        />
+                <div className={"dashboard-screen-enfant"}>
+                    <div className="information-div">
+                        <h2 className="sous-titre">Code d'invitation de la famille</h2>
+                        <div className="flex items-center gap-4">
+                            <p
+                                className={`text-gray-700 text-lg select-all font-mono bg-gray-100 p-2 rounded ${!isUuidVisible ? 'blur-sm' : ''}`}
+                            >
+                                {familleUuid || "Chargement..."}
+                            </p>
+                            <div className="space-y-2">
+                                <Button type={"button"} variant={"outline"} fullWidth
+                                    onClick={() => setIsUuidVisible(!isUuidVisible)}
+                                        children={isUuidVisible ? 'Cacher' : 'Afficher'}
+                                />
+                                <Button type={"button"} variant={"primary"} fullWidth
+                                    onClick={handleCopy}
+                                        children={copySuccess ? 'Copié!' : 'Copier'}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="information-div">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="sous-titre mb-0">Membres de votre famille</h2>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleRefresh}
+                                disabled={cooldown > 0}
+                                children={cooldown > 0
+                                    ? `Attendre ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`
+                                    : "Actualiser"
+                                }
+                            />
+                        </div>
+                        <div className="space-y-3">
+                            {familleInfo?.utilisateurs && familleInfo.utilisateurs.length > 0 ? (
+                                familleInfo.utilisateurs.map((utilisateur, index) => (
+                                    <FamilleItem key={index}
+                                                 nom={utilisateur.nom}
+                                    />))
+                            ) : (
+                                <p className="text-gray-500">Aucun membre dans la famille pour le moment.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="information-div">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="sous-titre mb-0">Membres de votre famille</h2>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleRefresh}
-                        disabled={cooldown > 0}
-                        children={cooldown > 0
-                            ? `Attendre ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`
-                            : "Actualiser"
-                        }
-                    />
-                </div>
-
-                <div className="space-y-3">
-                    {familleInfo?.utilisateurs && familleInfo.utilisateurs.length > 0 ? (
-                        familleInfo.utilisateurs.map((utilisateur, index) => (
-                            <FamilleItem key={index}
-                                         nom={utilisateur.nom}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-gray-500">Aucun membre dans la famille pour le moment.</p>
-                    )}
-                </div>
-            </div>
             </>)}
         </div>
     );
