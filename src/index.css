@@ -18,24 +18,27 @@
     --color-red-haze-danger-500: #c98b8b;
     --color-red-haze-danger-600: #b87373;
     --color-red-haze-danger-700: #a06262;
+
+    --color-yellow-haze-100: #fef7c6;
+    --color-yellow-haze-200: #eee9d7;
 }
 /*navbar*/
 .navbar-body{
-    @apply flex justify-center items-center p-4 bg-white
+    @apply flex justify-center p-4 bg-white
 }
 
 /*buttons*/
 .button-primary{
-    @apply bg-blue-haze-600 text-white hover:bg-blue-haze-700 focus:ring-blue-haze-500
+    @apply bg-blue-haze-600 text-white hover:bg-blue-haze-700 focus:ring-blue-haze-500 hover:cursor-pointer
 }
 .button-secondary{
-    @apply bg-blue-haze-200 text-gray-800 hover:bg-blue-haze-300 focus:ring-blue-haze-400 shadow-none
+    @apply bg-blue-haze-200 text-gray-800 hover:bg-blue-haze-300 focus:ring-blue-haze-400 shadow-none hover:cursor-pointer
 }
 .button-danger{
-    @apply bg-red-haze-danger-600 text-white hover:bg-red-haze-danger-700 focus:ring-red-haze-danger-500
+    @apply bg-red-haze-danger-600 text-white hover:bg-red-haze-danger-700 focus:ring-red-haze-danger-500 hover:cursor-pointer
 }
 .button-outline{
-    @apply bg-transparent border border-blue-haze-300 text-blue-haze-700 hover:bg-blue-haze-50 focus:ring-blue-haze-500
+    @apply bg-transparent border border-blue-haze-300 text-blue-haze-700 hover:bg-blue-haze-50 focus:ring-blue-haze-500 hover:cursor-pointer
 }
 
 /**/
@@ -69,14 +72,17 @@
 }
 
 /*dashboard*/
+.dashboard-titre{
+    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 ps-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl
+}
 .dashboard-screen{
     @apply min-h-screen space-y-4 flex flex-col
 }
 .dashboard-sections{
-    @apply border-blue-500 border-2 rounded-xl text-center p-3
+    @apply border-blue-haze-500 bg-blue-haze-200  border-2 rounded-xl text-center p-3 content-center
 }
 .dashboard-screen-enfant{
-    @apply rounded-xl flex flex-col flex-1 space-y-3
+    @apply rounded-xl flex flex-col flex-1 space-y-3 py-10
 }
 
 /*forms*/
@@ -101,7 +107,7 @@
     @apply px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg font-bold border border-amber-100
 }
 .produit-date{
-    @apply px-2 py-0.5 bg-blue-haze-50 text-gray-500 rounded-lg border border-blue-haze-100
+    @apply px-2 py-0.5 bg-gray-50 text-gray-600 rounded-lg border border-blue-haze-100
 }
 
 /*animation shimmer*/
