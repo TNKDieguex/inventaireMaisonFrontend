@@ -20,8 +20,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({checkFamille = tr
     }
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden bg-blue-haze-100">
-            <main className="flex-1 overflow-y-auto p-4">
+        <div className="relative flex flex-col h-screen overflow-hidden bg-blue-haze-100">
+            <main className="static flex-1 overflow-y-auto p-4">
                 <Outlet/>
             </main>
             <NavBar/>

@@ -8,6 +8,7 @@ import FamilleInscription from "../features/famille/components/FamilleInscriptio
 import FamilleCreation from "../features/famille/components/FamilleCreation.tsx";
 import ListeProduits from "../features/produits/components/ListeProduits.tsx";
 import ListeProduitsUrgentes from "../features/produits/components/ListeProduitsUrgentes.tsx";
+import CreationProduit from "../features/produits/components/CreationProduit.tsx";
 
 const AppRoutes = () => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -27,6 +28,7 @@ const AppRoutes = () => {
                     <Route path="/dashboard" element={<ProduitDashboard />} />
                     <Route path="/produits" element={<ListeProduits />}/>
                     <Route path="/produits/liste-alertes-achats" element={<ListeProduitsUrgentes />} />
+                    <Route path="/produits/creation" element={<CreationProduit />} />
                 </Route>
 
                 <Route path={"*"} element={<Navigate to={"/login"} replace />}/>

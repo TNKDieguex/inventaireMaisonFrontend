@@ -62,7 +62,7 @@ const RegisterPage = () => {
         }
     };
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = e.target.name as keyof CreationUtilisateur;
         setValues({ ...values, [fieldName]: e.target.value });
     };

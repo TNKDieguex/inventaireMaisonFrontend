@@ -3,12 +3,7 @@ import AppRoutes from "./routes/AppRoutes.tsx";
 
 function App() {
   return (
-    <div className="sm:max-w-xl mx-auto
-      min-h-dvh
-      justify-center
-      flex
-      flex-col
-    ">
+    <div className="sm:max-w-xl mx-auto sm:scrollbar-none md:scrollbar-thumb-blue-haze-400 scroll-smooth">
         <AppRoutes/>
     </div>
   )
