@@ -58,7 +58,7 @@ const FamilleInscription = () => {
     const isValid = ()=>{
         return !(values.familleUuid === '');
     }
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setValues({...values,[e.target.name]: e.target.value});
     }
 

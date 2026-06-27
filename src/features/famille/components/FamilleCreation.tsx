@@ -59,7 +59,7 @@ const FamilleCreation = () => {
         return !(values.nomFamille === '');
     }
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setValues({...values,[e.target.name]: e.target.value});
     }
 
