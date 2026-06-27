@@ -1,5 +1,5 @@
 import axiosClient from "../api/axiosClient";
-import type {ProduitDto, UpdateProduitDto} from "../features/produits/types";
+import type {CreateProduitDto, ProduitDto, UpdateProduitDto} from "../features/produits/types";
 
 export const fetchAndCacheProduits = async (familleUuid: string): Promise<ProduitDto[]> => {
     const response = await axiosClient.get<ProduitDto[]>('/produits');
@@ -31,4 +31,13 @@ export const updateProduit = async (familleUuid: string|null, listeProduits: Pro
         timestamp: Date.now()
     }));
     return listeModifie;
+};
+
+export const creerProduits = async (familleUuid: string|null, listeProduits: CreateProduitDto[]): Promise<ProduitDto[]> => {
+    const response = await axiosClient.post<ProduitDto[]>('/produits/creation', listeProduits);
+    sessionStorage.setItem(`produits_famille_${familleUuid}`, JSON.stringify({
+        data: response.data,
+        timestamp: Date
+        }));
+    return response.data;
 };
