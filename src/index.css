@@ -24,7 +24,7 @@
 }
 /*navbar*/
 .navbar-body{
-    @apply flex justify-center p-4 bg-white
+    @apply flex justify-center p-4 bg-white absolute bottom-0 inset-x-0;
 }
 
 /*buttons*/
@@ -73,16 +73,19 @@
 
 /*dashboard*/
 .dashboard-titre{
-    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 ps-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl
+    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 ps-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl shadow-sm
 }
 .dashboard-screen{
-    @apply min-h-screen space-y-4 flex flex-col
+    @apply  space-y-4 flex flex-col
 }
 .dashboard-sections{
-    @apply border-blue-haze-500 bg-blue-haze-200  border-2 rounded-xl text-center p-3 content-center
+    @apply border-blue-haze-500 bg-blue-haze-200  border-2 rounded-xl text-center p-3 content-center shadow-sm
 }
 .dashboard-screen-enfant{
-    @apply rounded-xl flex flex-col flex-1 space-y-3 py-10
+    @apply rounded-xl flex flex-col flex-1 space-y-3 py-12
+}
+.ajouter-produit{
+    @apply absolute right-2 bottom-12 rounded-full p-1 bg-blue-haze-600 hover:bg-blue-haze-700 text-white  hover:cursor-pointer
 }
 
 /*forms*/
