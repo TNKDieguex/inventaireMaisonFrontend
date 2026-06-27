@@ -108,9 +108,11 @@ const FamillePage = () => {
         <div className="dashboard-screen">
             <h1 className="dashboard-titre">{familleInfo?.nomFamille || "Chargement..."}</h1>
             {error && (
-                <p className="error">
-                    {error}
-                </p>
+                <div className={"dashboard-screen-enfant"}>
+                    <p className="error">
+                        {error}
+                    </p>
+                </div>
             )}
             {!error && (<>
                 <div className={"dashboard-screen-enfant"}>

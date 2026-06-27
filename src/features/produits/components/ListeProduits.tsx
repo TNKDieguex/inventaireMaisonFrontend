@@ -58,13 +58,15 @@ const ListeProduits = () => {
         <div className={"dashboard-screen"}>
             <h1 className="dashboard-titre">
                 Liste des produits</h1>
+            {error && (
+                <div className={"dashboard-screen-enfant"}>
+                    <p className="error">
+                        {error}
+                    </p>
+                </div>
+            )}
             {!error && (<>
                 <div className={"dashboard-screen-enfant"}>
-                    {error && (
-                        <p className="error">
-                            {error}
-                        </p>
-                    )}
                     {listeProduits.length>0 ?(
                         [...listeProduits].reverse().map((produit, index) => (
                                 <ItemProduit key={index} produit={produit} onSuccess={fetchListeProduits}/>

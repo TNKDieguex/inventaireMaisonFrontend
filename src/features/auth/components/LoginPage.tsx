@@ -1,5 +1,5 @@
 import FormInputs from "../../../components/FormInputs.tsx";
-import {type SyntheticEvent, useState} from "react";
+import React, {type SyntheticEvent, useState} from "react";
 import axiosClient from "../../../api/axiosClient.ts";
 import {useNavigate} from "react-router-dom";
 import type {AuthResponseDto, ErreurResponseDto, LoginRequestDto} from "../types";
@@ -82,7 +82,7 @@ const LoginPage = () => {
         return !(values.courriel === '' || values.motPasse === '');
     }
     
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setValues({...values,[e.target.name]: e.target.value});
     }
 
