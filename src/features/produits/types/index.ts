@@ -20,6 +20,17 @@ export interface ProduitDto {
     notes?: string;
     uuid : string;
 }
+
+export interface CreateProduitDto {
+    nom: string;
+    quantite: number;
+    quantiteMinimal: number;
+    dateLimiteConsommation: string;
+    categorieProduit: CategorieProduitType;
+    notes?: string;
+}
+
+
 export interface UpdateProduitDto {
     quantite: number;
     quantiteMinimal: number;
