@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
-    variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+    variant?: 'primary' | 'secondary' | 'confirm' | 'danger' | 'outline';
     size?: 'sm' | 'md' | 'lg';
     fullWidth?: boolean;
 }
@@ -14,10 +14,11 @@ export const Button: React.FC<ButtonProps> = ({
     className = '',
     ...props
     }) => {
-    const baseStyles = "inline-flex items-center justify-center font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm";
+    const baseStyles = "button-basic-style";
     const variants = {
         primary: "button-primary",
         secondary: "button-secondary",
+        confirm: "button-confirm",
         danger: "button-danger",
         outline: "button-outline"
     };

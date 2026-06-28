@@ -21,6 +21,10 @@
 
     --color-yellow-haze-100: #fef7c6;
     --color-yellow-haze-200: #eee9d7;
+
+    --color-green-haze-500: #91c98b;
+    --color-green-haze-600: #7cb873;
+    --color-green-haze-700: #68a062
 }
 /*navbar*/
 .navbar-body{
@@ -28,11 +32,18 @@
 }
 
 /*buttons*/
+.button-basic-style{
+    @apply inline-flex items-center justify-center font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm
+}
+
 .button-primary{
     @apply bg-blue-haze-600 text-white hover:bg-blue-haze-700 focus:ring-blue-haze-500 hover:cursor-pointer
 }
 .button-secondary{
     @apply bg-blue-haze-200 text-gray-800 hover:bg-blue-haze-300 focus:ring-blue-haze-400 shadow-none hover:cursor-pointer
+}
+.button-confirm{
+    @apply bg-green-haze-600 text-white hover:bg-green-haze-700 focus:ring-green-haze-500 hover:cursor-pointer
 }
 .button-danger{
     @apply bg-red-haze-danger-600 text-white hover:bg-red-haze-danger-700 focus:ring-red-haze-danger-500 hover:cursor-pointer
