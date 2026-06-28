@@ -30,11 +30,18 @@ export interface CreateProduitDto {
     notes?: string;
 }
 
-
 export interface UpdateProduitDto {
     quantite: number;
     quantiteMinimal: number;
     dateLimiteConsommation: string;
     notes: string;
     uuid: string;
+}
+
+export interface UpdateQuantiteProduitDto{
+    quantite: number;
+}
+
+export interface UpdateNoteProduitDto{
+    notes: string;
 }
