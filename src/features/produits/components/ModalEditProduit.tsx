@@ -2,11 +2,10 @@ import type {ProduitDto, UpdateProduitDto} from "../types";
 import Button from "../../../components/Button.tsx";
 import React, {type SyntheticEvent, useState} from "react";
 import FormInputs from "../../../components/FormInputs.tsx";
-import {getFamilleIdFromToken, getValidCachedProduits} from "../../../utils/jwtUtils.ts";
 import LoadingModal from "../../../components/LoadingModal.tsx";
 import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
-import {deleteProduit, updateProduit} from "../../../utils/ProduitCache.ts";
+import axiosClient from "../../../api/axiosClient.ts";
 
 const ModalEditProduit = ({produit, isEditing, onSuccess}:
                           {produit: ProduitDto,
@@ -16,10 +15,6 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
     const [validation, setValidation] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [familleUuid] = useState<string | null>(()=>{
-        const token = localStorage.getItem('token');
-        return token ? getFamilleIdFromToken(token) : null;
-    });
 
     const [values, setValues] = useState<UpdateProduitDto>(
         {
@@ -62,11 +57,11 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
 
         try {
             setIsLoading(true);
-            const currentList = getValidCachedProduits(familleUuid) || [];
-            await updateProduit(familleUuid, currentList, values);
+            await axiosClient.put<ProduitDto>('/produits/modifierProduit', values);
 
             onSuccess();
             isEditing();
+            setIsLoading(false);
         }catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 setError(erreur.response?.data?.message || 'Échec de la connexion.');
@@ -74,16 +69,13 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
                 console.log(erreur)
                 setError('Une erreur inattendue es survenue.');
             }
-        }finally {
-            setIsLoading(false);
         }
     }
     const handleDeleteProduit = async ()=>{
         try{
             setIsLoading(true)
             setValidation(false);
-            const currentList = getValidCachedProduits(familleUuid) || [];
-            await deleteProduit(values.uuid, familleUuid, currentList);
+            await axiosClient.delete<ProduitDto>(`/produits/${values.uuid}`);
 
             onSuccess();
             isEditing();
