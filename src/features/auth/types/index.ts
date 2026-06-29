@@ -28,3 +28,9 @@ export interface ErreurResponseDto {
     timeStamp: string;
     status: number;
 }
+export interface UserData{
+    nom: string;
+    courriel: string;
+    familleUuid: string;
+    userUuid: string;
+}
