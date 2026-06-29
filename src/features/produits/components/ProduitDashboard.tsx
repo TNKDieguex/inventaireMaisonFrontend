@@ -1,7 +1,12 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
 import type {ProduitDto} from "../types";
 import {useNavigate} from "react-router-dom";
-import {getFamilleIdFromToken, getValidCachedProduits} from "../../../utils/jwtUtils.ts";
+import {
+    fetchFamilleAndPutCache,
+    getFamilleIdFromToken,
+    getValidCachedFamille,
+    getValidCachedProduits
+} from "../../../utils/jwtUtils.ts";
 import type {ErreurResponseDto} from "../../auth/types";
 import axios from "axios";
 import LoadingModal from "../../../components/LoadingModal.tsx";
@@ -40,12 +45,26 @@ const ProduitDashboard = () => {
 
         return { total: listeProduits.length, stockFaible, perime, proche };
     }, [listeProduits]);
-    const fetchListeProduits = useCallback(async () => {
+
+    const fetchListeProduitsAndFamille = useCallback(async () => {
         if (!familleUuid) return;
         try {
+            setError('');
             setIsLoading(true);
-            const data = await fetchAndCacheProduits(familleUuid);
-            setListeProduits(data);
+
+            const tasks = [];
+            if (!getValidCachedProduits(familleUuid)) {
+                tasks.push(
+                    fetchAndCacheProduits(familleUuid).then(
+                        data => setListeProduits(data))
+                );
+            }
+            if (!getValidCachedFamille(familleUuid)) {
+                tasks.push(fetchFamilleAndPutCache(familleUuid));
+            }
+            if (tasks.length > 0) {
+                await Promise.all(tasks);
+            }
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 setError(erreur.response?.data?.message || 'Échec de la connexion.');
@@ -58,13 +77,17 @@ const ProduitDashboard = () => {
     }, [familleUuid]);
 
     useEffect(() => {
-        if (!familleUuid || listeProduits) return;
+        if (!familleUuid) return;
+        const hasProduits = !!getValidCachedProduits(familleUuid);
+        const hasFamille = !!getValidCachedFamille(familleUuid);
 
-        const initDashboard = async () => {
-            await fetchListeProduits();
-        };
-        void initDashboard();
-    }, [familleUuid, listeProduits, fetchListeProduits]);
+        if (!hasProduits || !hasFamille) {
+            const initDashboard = async () => {
+                await fetchListeProduitsAndFamille();
+            };
+            void initDashboard();
+        }
+    }, [familleUuid, fetchListeProduitsAndFamille]);
 
     const totalProducts = stats.total || 1;
     const barreProgress = [
