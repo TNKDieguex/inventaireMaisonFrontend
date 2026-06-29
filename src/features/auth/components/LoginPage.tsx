@@ -55,6 +55,7 @@ const LoginPage = () => {
             const response = await axiosClient.post<AuthResponseDto>('/utilisateurs/connexion', values);
             const token = response.data.token;
             localStorage.setItem('token', token);
+            sessionStorage.setItem('user', JSON.stringify({courriel: values.courriel}));
             setValues({
                 courriel: '',
                 motPasse: ''
