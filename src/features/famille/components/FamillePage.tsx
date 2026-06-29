@@ -1,7 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import FamilleItem from "./FamilleItem.tsx";
-import {getFamilleIdFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
-import axiosClient from "../../../api/axiosClient.ts";
+import {fetchFamilleAndPutCache, getFamilleIdFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
 import type {FamilleDto} from "../types";
 import Button from "../../../components/Button.tsx";
 import {useNavigate} from "react-router-dom";
@@ -24,16 +23,12 @@ const FamillePage = () => {
     });
 
     const fetchFamilleInfo = useCallback(async () => {
+        if (!familleUuid) return;
+
         try {
             setError('');
-            const response = await axiosClient.get<FamilleDto>('/utilisateurs/familles/info');
-            setFamilleInfo(response.data);
-
-            const cacheContainer = {
-                data: response.data,
-                timestamp: Date.now()
-            };
-            sessionStorage.setItem(`famille_info_${familleUuid}`, JSON.stringify(cacheContainer));
+            const response = await fetchFamilleAndPutCache(familleUuid);
+            setFamilleInfo(response);
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 setError(erreur.response?.data?.message || 'Échec de la récupération des données.');
@@ -153,8 +148,8 @@ const FamillePage = () => {
                         </div>
                         <div className="space-y-3">
                             {familleInfo?.utilisateurs && familleInfo.utilisateurs.length > 0 ? (
-                                familleInfo.utilisateurs.map((utilisateur, index) => (
-                                    <FamilleItem key={index}
+                                familleInfo.utilisateurs.map((utilisateur) => (
+                                    <FamilleItem key={utilisateur.courriel}
                                                  nom={utilisateur.nom}
                                     />))
                             ) : (
