@@ -1,5 +1,6 @@
 import type {ProduitDto} from "../features/produits/types";
 import type {FamilleDto} from "../features/famille/types";
+import axiosClient from "../api/axiosClient.ts";
 
 export const getFamilleIdFromToken = (token: string | null): string | null => {
     if (!token) return null;
@@ -51,3 +52,12 @@ export const getValidCachedFamille = (familleUuid: string | null): FamilleDto | 
     sessionStorage.removeItem(`famille_info_${familleUuid}`);
     return undefined;
 };
+export const fetchFamilleAndPutCache = async (familleUuid: string | null) : Promise<FamilleDto> =>{
+    const response = await axiosClient.get<FamilleDto>('/utilisateurs/familles/info');
+    const cacheContainer = {
+        data: response.data,
+        timestamp: Date.now()
+    };
+    sessionStorage.setItem(`famille_info_${familleUuid}`, JSON.stringify(cacheContainer));
+    return response.data;
+}
