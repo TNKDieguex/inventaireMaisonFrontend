@@ -54,8 +54,8 @@ const ListeProduitsUrgentes = () => {
             {!error && (<>
                 <div className={"dashboard-screen-enfant"}>
                     {listeDUrgence && listeDUrgence.length>0 ?(
-                        [...listeDUrgence].reverse().map((produit, index) => (
-                                <ItemProduit key={index} produit={produit} onSuccess={fetchProduitsUrgentes}/>
+                        [...listeDUrgence].map((produit) => (
+                                <ItemProduit key={produit.uuid} produit={produit} onSuccess={fetchProduitsUrgentes}/>
                             )
                         )):(
                         <p className={"text-gray-500"}>
