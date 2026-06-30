@@ -24,13 +24,13 @@ const AppRoutes = () => {
                     <Route path="/famille" element={<FamillePage />} />
                     <Route path="/famille/creation" element={<FamilleCreation />} />
                     <Route path="/famille/inscription" element={<FamilleInscription />} />
+                    <Route path="/profil" element={<ProfilPage />} />
                 </Route>
                 <Route element={<ProtectedRoute checkFamille={true} />}>
                     <Route path="/dashboard" element={<ProduitDashboard />} />
                     <Route path="/produits" element={<ListeProduits />}/>
                     <Route path="/produits/liste-alertes-achats" element={<ListeProduitsUrgentes />} />
                     <Route path="/produits/creation" element={<CreationProduit />} />
-                    <Route path="/profil" element={<ProfilPage />} />
                 </Route>
 
                 <Route path={"*"} element={<Navigate to={"/login"} replace />}/>
