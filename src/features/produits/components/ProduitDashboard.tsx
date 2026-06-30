@@ -17,6 +17,8 @@ const ProduitDashboard = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [menuOuvert, setMenuOuvert] = useState(false);
+    const [cooldown, setCooldown] = useState(0);
 
     const [familleUuid] = useState<string | null>(() => {
         const token = localStorage.getItem('token');
@@ -75,11 +77,45 @@ const ProduitDashboard = () => {
             setIsLoading(false);
         }
     }, [familleUuid]);
+    const handleRefreshProduits = async () => {
+        if (cooldown > 0 || !familleUuid) return;
+        sessionStorage.removeItem(`produits_famille_${familleUuid}`);
+        setCooldown(180);
+        setMenuOuvert(false);
+
+        try {
+            setIsLoading(true);
+            setError('');
+            const data = await fetchAndCacheProduits(familleUuid);
+            setListeProduits(data);
+        } catch (erreur: unknown) {
+            if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
+                setError(erreur.response?.data?.message || 'Échec de la mise à jour.');
+            } else {
+                setError('Une erreur est survenue.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    const handleRefresh = async () => {
+        if (cooldown > 0 || !familleUuid) return;
+        sessionStorage.removeItem(`produits_famille_${familleUuid}`);
+        setCooldown(180);
+        await handleRefreshProduits();
+    };
+    const switchMenuOuvert = ()=>{
+        setMenuOuvert(!menuOuvert);
+    }
 
     useEffect(() => {
         if (!familleUuid) return;
         const hasProduits = !!getValidCachedProduits(familleUuid);
         const hasFamille = !!getValidCachedFamille(familleUuid);
+        if (cooldown > 0) {
+            const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
 
         if (!hasProduits || !hasFamille) {
             const initDashboard = async () => {
@@ -87,7 +123,7 @@ const ProduitDashboard = () => {
             };
             void initDashboard();
         }
-    }, [familleUuid, fetchListeProduitsAndFamille]);
+    }, [familleUuid, fetchListeProduitsAndFamille, cooldown]);
 
     const totalProducts = stats.total || 1;
     const barreProgress = [
@@ -108,9 +144,31 @@ const ProduitDashboard = () => {
                     </p>
                 </div>
             )}
-            <div className={"ajouter-produit"} onClick={() => {navigate('/produits/creation')}}>
-                <svg className={"size-9"}><use href={"/sprite.svg#add"}/></svg>
-            </div>
+            <>
+                {menuOuvert && (
+                    <div className="absolute inset-0 bg-slate-800/20 backdrop-blur-sm z-20 "
+                        onClick={switchMenuOuvert} />
+                )}
+                <div className="absolute bottom-18 right-3 flex flex-col items-end gap-3 z-50 select-none">
+                    {menuOuvert && (
+                        <div className="menu-options-enfant">
+                            <span className="menu-options-item" onClick={() => navigate('/produits/creation')}>
+                                Créer un produit +
+                            </span>
+                            <span className={`menu-options-item ${cooldown > 0 ? 
+                                'opacity-50 cursor-not-allowed pointer-events-none hover:bg-transparent hover:text-slate-800' : ''}`}
+                                onClick={cooldown > 0 ? undefined : handleRefresh}>
+                            {cooldown > 0 ?
+                                `Attendre ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`
+                                : "Rafraîchir l'inventaire"}
+                        </span>
+                        </div>
+                    )}
+                    <div className="menu-options" onClick={switchMenuOuvert}>
+                        {menuOuvert ? <svg className="size-9"><use href="/sprite.svg#xMark"/></svg>: <svg className="size-9"><use href="/sprite.svg#options"/></svg>}
+                    </div>
+                </div>
+            </>
         {!error && (
             <>
                 <div className="dashboard-screen-enfant">
