@@ -1,12 +1,17 @@
 import {useState} from "react";
 import LoadingModal from "../../../components/LoadingModal.tsx";
-import type {UserData} from "../types";
+import type {AuthResponseDto, ErreurResponseDto, UserData} from "../types";
 import {getFamilleIdFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
 import Button from "../../../components/Button.tsx";
+import axiosClient from "../../../api/axiosClient.ts";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const ProfilPage = () => {
-    const [error] = useState('');
-    const [isLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showConfirmQuitter, setShowConfirmQuitter] = useState(false);
+    const navigate = useNavigate();
 
     const [userData] = useState<UserData>(() => {
         try {
@@ -47,6 +52,31 @@ const ProfilPage = () => {
         return { nom: "", courriel: "", familleUuid: "", userUuid: "" };
     });
 
+    const handleQuitterFamille = async () => {
+        try {
+            setError('');
+            setIsLoading(true);
+            setShowConfirmQuitter(false);
+
+            const response = await axiosClient.post<AuthResponseDto>(`/utilisateurs/quitter-famille`);
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+
+            sessionStorage.removeItem(`famille_info_${userData.familleUuid}`);
+            sessionStorage.removeItem(`produits_famille_${userData.familleUuid}`);
+
+            navigate('/famille');
+        } catch (erreur: unknown) {
+            if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
+                setError(erreur.response?.data?.message || "Échec de l'action.");
+            } else {
+                setError('Une erreur inattendue est survenue.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
@@ -55,7 +85,7 @@ const ProfilPage = () => {
 
     return (
         <div className="dashboard-screen">
-            <h1 className="titre">Mon Profil</h1>
+            <h1 className="dashboard-titre">Mon Profil</h1>
 
             {error && (
                 <div className="dashboard-screen-enfant">
@@ -80,23 +110,44 @@ const ProfilPage = () => {
                     </div>
                     <div className="information-div text-left space-y-3">
                         <h3 className="sous-titre text-red-600 mb-1">Zone de danger</h3>
-                        <div className="flex flex-col gap-2">
-                            <Button
-                                type="button"
-                                variant="danger"
-                                fullWidth
-                                onClick={handleLogout}
-                                children="Se déconnecter"
-                            />
+                        <div className="flex flex-col gap-4">
+                            {userData.familleUuid ? (
+                                <Button
+                                    type="button"
+                                    variant="danger"
+                                    fullWidth
+                                    onClick={() => setShowConfirmQuitter(true)}
+                                    children="Quitter la famille"/>
+                            ) : (
+                                <p className="text-xs text-gray-400 italic">Vous n'êtes associé à aucune famille.</p>
+                            )}
                             <Button
                                 type="button"
                                 variant="outline"
                                 fullWidth
-                                onClick={() => {
-                                    console.log("userData:", userData);
-                                }}
-                                children="show data user"
-                            />
+                                onClick={handleLogout}
+                            >
+                                <div className="flex items-center justify-center gap-2">
+                                    <svg className="size-5"><use href="/sprite.svg#logout" /></svg>
+                                    <span>Se déconnecter</span>
+                                </div>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showConfirmQuitter && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 backdrop-blur-sm select-none pointer-events-auto">
+                    <div className="bg-blue-haze-200 p-8 rounded-2xl
+                                shadow-2xl max-w-sm w-full mx-4 flex flex-col
+                                items-center text-center space-y-6 border border-blue-haze-100">
+                        <h1 className="titre ">Attention</h1>
+                        <p className="text-sm text-gray-500">
+                            Voulez-vous vraiment quitter votre famille ? Vous perdrez l'accès immédiat à l'inventaire partagé.
+                        </p>
+                        <div className="flex flex-row gap-2 w-full pt-2">
+                            <Button type="button" variant="danger" fullWidth children="Oui, quitter" onClick={handleQuitterFamille} />
+                            <Button type="button" variant="outline" fullWidth children="Annuler" onClick={() => setShowConfirmQuitter(false)} />
                         </div>
                     </div>
                 </div>
