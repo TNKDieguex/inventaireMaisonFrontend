@@ -27,8 +27,21 @@
     --color-green-haze-700: #68a062
 }
 /*navbar*/
-.navbar-body{
-    @apply flex justify-center p-4 bg-white absolute bottom-0 inset-x-0;
+
+.navbar-body {
+    @apply flex bottom-0 inset-x-0 bg-white/90 backdrop-blur-md border-t border-slate-200/60  px-6 py-2 z-30 shadow-2xs;
+}
+.navbar-list {
+    @apply flex flex-row justify-around items-center max-w-md mx-auto w-full list-none m-0 p-0;
+}
+.navbar-link {
+    @apply flex flex-col items-center gap-1 text-slate-400 text-xs font-bold tracking-wider uppercase transition-all duration-200 select-none no-underline py-1 px-4 rounded-xl cursor-pointer;
+}
+.navbar-link.active {
+    @apply text-blue-haze-600  scale-105 font-black;
+}
+.navbar-link:hover:not(.active) {
+    @apply text-slate-600 ;
 }
 
 /*buttons*/
@@ -84,19 +97,25 @@
 
 /*dashboard*/
 .dashboard-titre{
-    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 ps-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl shadow-sm
+    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 px-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl shadow-sm
 }
 .dashboard-screen{
-    @apply  space-y-4 flex flex-col
+    @apply  flex flex-col
 }
 .dashboard-sections{
     @apply border-blue-haze-500 bg-blue-haze-200  border-2 rounded-xl text-center p-3 content-center shadow-sm
 }
 .dashboard-screen-enfant{
-    @apply rounded-xl flex flex-col flex-1 space-y-3 py-12
+    @apply rounded-xl flex flex-col flex-1 space-y-3 pt-12
 }
-.ajouter-produit{
-    @apply absolute right-2 bottom-12 rounded-full p-1 bg-blue-haze-600 hover:bg-blue-haze-700 text-white  hover:cursor-pointer
+.menu-options {
+    @apply rounded-full p-2 bg-blue-haze-600 hover:bg-blue-haze-700 text-white cursor-pointer shadow-lg transition-transform active:scale-95
+}
+.menu-options-enfant {
+    @apply flex flex-col space-y-2 p-2 rounded-2xl min-w-44 text-right
+}
+.menu-options-item {
+    @apply text-slate-800  bg-white/60 border-slate-300/30 rounded-xl px-4 py-2 text-xs font-semibold cursor-pointer transition-colors hover:bg-blue-haze-600 hover:text-white shadow-sm
 }
 
 /*forms*/
