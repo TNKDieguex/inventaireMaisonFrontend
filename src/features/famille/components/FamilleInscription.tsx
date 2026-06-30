@@ -85,9 +85,9 @@ const FamilleInscription = () => {
                             {error}
                         </p>
                     )}
-                    <Button type={"submit"} variant={"primary"} fullWidth
-                            children={"Rejoindre"}
-                    />
+                    <Button type={"submit"} variant={"primary"} fullWidth>
+                        Rejoindre
+                    </Button>
                 </form>
             </div>
         </div>

@@ -43,22 +43,23 @@ const FormInputs = ({placeholder, type, value, onChange, name, label, maxLength,
             {isNumberType ? (
                 <div className="flex pt-3 px-1 items-center w-full border border-blue-haze-600 bg-blue-haze-200 rounded-md shadow-sm
                 focus-within:border-blue-haze-500  transition-all overflow-hidden">
-                    <Button type={"button"} variant={"primary"}
-                    children={"-"} onClick={()=>{handleStep( - 1)}}
-                    />
+                    <Button type={"button"} variant={"primary"} onClick={()=>{handleStep( - 1)}}>
+                        -
+                    </Button>
 
                     <input
                         type="number"
                         placeholder={placeholder}
+                        aria-label={name}
                         className="w-full text-center font-mono font-bold py-2 px-1 text-slate-700 bg-transparent border-none
                         outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         name={name}
                         value={value ?? ''}
                         onChange={onChange}
                     />
-                    <Button type={"button"} variant={"primary"}
-                            children={"+"} onClick={()=>{handleStep( + 1)}}
-                    />
+                    <Button type={"button"} variant={"primary"} onClick={()=>{handleStep( + 1)}}>
+                            +
+                    </Button>
                 </div>
             ) : isSelectType ? (
                 <div className="relative w-full text-left">

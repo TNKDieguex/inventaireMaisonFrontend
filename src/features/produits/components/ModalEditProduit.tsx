@@ -114,11 +114,9 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
                         <Button
                             type="button"
                             variant="danger"
-                            onClick={() => setValidation(true)}
-                            children={
-                                <svg className={"size-5"}><use href={"/sprite.svg#trash"}/></svg>
-                            }
-                        />
+                            onClick={() => setValidation(true)}>
+                            <svg className={"size-5"}><use href={"/sprite.svg#trash"}/></svg>
+                        </Button>
                     </div>
                 </div>
                 <form onSubmit={handleModProduit}
@@ -141,12 +139,12 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
                             </p>
                         )}
                         <div className={"p-2 flex flex-row gap-2"}>
-                            <Button type="submit" variant={"primary"} fullWidth
-                                    children={"Confirmer"}
-                            />
-                            <Button type="button" variant={"outline"} fullWidth
-                                    children={"Annuler"} onClick={isEditing}
-                            />
+                            <Button type="submit" variant={"primary"} fullWidth>
+                                Confirmer
+                            </Button>
+                            <Button type="button" variant={"outline"} onClick={isEditing} fullWidth>
+                                Annuler
+                            </Button>
                         </div>
                 </form>
             </div>
@@ -157,12 +155,12 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
             items-center text-center space-y-6 border border-blue-haze-100">
                     <h1 className={"titre"}>Voulez-vous vraiment supprimer ce produit ?</h1>
                     <div className={"flex flex-row gap-2"}>
-                        <Button type={"button"} variant={"primary"} fullWidth
-                                children={"Oui"} onClick={handleDeleteProduit}
-                        />
-                        <Button type={"button"} variant={"danger"} fullWidth
-                                children={"Non"} onClick={()=>{setValidation(false)}}
-                        />
+                        <Button type={"button"} variant={"primary"} fullWidth onClick={handleDeleteProduit}>
+                            Oui
+                        </Button>
+                        <Button type={"button"} variant={"danger"} fullWidth onClick={()=>{setValidation(false)}}>
+                            Non
+                        </Button>
                     </div>
                 </div>
             </div>}

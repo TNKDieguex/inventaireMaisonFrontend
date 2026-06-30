@@ -83,15 +83,14 @@ const FamillePage = () => {
                         <h2 className="titre ">Vous n'êtes dans aucune famille</h2>
                         <p className="sous-texte mb-6 text-center">Pour commencer, créez une nouvelle famille ou rejoignez-en une existante.</p>
                         <div className="flex gap-4 justify-center">
-                            <Button type={"button"} variant={"primary"} children={"Créer une famille"}
-                                    onClick={() => {
-                                navigate('/famille/creation');
-                            }}/>
-                            <Button type={"button"} variant={"outline"} children={"Rejoindre une famille"}
-                                    onClick={() => {
-                                navigate('/famille/inscription');
-                            }}
-                            />
+                            <Button type={"button"} variant={"primary"}
+                                    onClick={() => {navigate('/famille/creation')}}>
+                                Créer une famille
+                            </Button>
+                            <Button type={"button"} variant={"outline"}
+                                    onClick={() => {navigate('/famille/inscription')}}>
+                                Rejoindre une famille
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -121,13 +120,13 @@ const FamillePage = () => {
                             </p>
                             <div className="space-y-2">
                                 <Button type={"button"} variant={"outline"} fullWidth
-                                    onClick={() => setIsUuidVisible(!isUuidVisible)}
-                                        children={isUuidVisible ? 'Cacher' : 'Afficher'}
-                                />
+                                    onClick={() => setIsUuidVisible(!isUuidVisible)}>
+                                    {isUuidVisible ? 'Cacher' : 'Afficher'}
+                                </Button>
                                 <Button type={"button"} variant={"primary"} fullWidth
-                                    onClick={handleCopy}
-                                        children={copySuccess ? 'Copié!' : 'Copier'}
-                                />
+                                    onClick={handleCopy}>
+                                        {copySuccess ? 'Copié!' : 'Copier'}
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -139,12 +138,12 @@ const FamillePage = () => {
                                 type="button"
                                 variant="outline"
                                 onClick={handleRefresh}
-                                disabled={cooldown > 0}
-                                children={cooldown > 0
+                                disabled={cooldown > 0}>
+                                {cooldown > 0
                                     ? `Attendre ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`
                                     : "Actualiser"
                                 }
-                            />
+                            </Button>
                         </div>
                         <div className="space-y-3">
                             {familleInfo?.utilisateurs && familleInfo.utilisateurs.length > 0 ? (

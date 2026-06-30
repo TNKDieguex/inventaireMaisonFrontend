@@ -129,16 +129,19 @@ const ItemProduit = ({produit, onSuccess}:{produit: ProduitDto, onSuccess: ()=>v
                                     type="text"
                                     maxLength={100}
                                     value={localNotes.notes}
+                                    aria-placeholder={"Ajouter des notes..."}
                                     onChange={(e) => setLocalNotes({ notes: e.target.value })}
                                     placeholder="Ajouter des notes..."
                                     className="w-full text-sm text-slate-700 bg-white border border-blue-haze-400 rounded-xl px-3 py-1.5 outline-none focus:border-blue-haze-600 transition-all text-left"
                                 />
                                 <Button type={"button"} variant={"confirm"} className={"p-1.5 h-7"}
-                                        children={<svg className="size-4"><use href="/sprite.svg#check" /></svg>}
-                                        onClick={handleModNote}
-                                />
-                                <Button type={"button"} variant={"danger"} children={"Annuler"}
-                                        className={"p-1.5 h-7 text-xs w-13"} onClick={changerIsEditingNote}/>
+                                        onClick={handleModNote}>
+                                    <svg className="size-4"><use href="/sprite.svg#check" /></svg>
+                                </Button>
+                                <Button type={"button"} variant={"danger"} className={"p-1.5 h-7 text-xs w-13"}
+                                        onClick={changerIsEditingNote}>
+                                    Annuler
+                                </Button>
                             </>
                         )}
                     </div>
@@ -146,8 +149,9 @@ const ItemProduit = ({produit, onSuccess}:{produit: ProduitDto, onSuccess: ()=>v
                     <div className="text-left mt-1">
                         <Button type="button"
                                 className="text-xs"
-                                onClick={changerIsEditingNote}
-                            children={"+Ajouter une note"}/>
+                                onClick={changerIsEditingNote}>
+                            + Ajouter une note
+                        </Button>
                     </div>
                 )}
 
@@ -164,19 +168,25 @@ const ItemProduit = ({produit, onSuccess}:{produit: ProduitDto, onSuccess: ()=>v
                             </>
                         ) : (
                             <>
-                                <Button type="button" variant="primary" className="size-7" children={"-"}
-                                        onClick={() => handleStep(-1)}/>
+                                <Button type="button" variant="primary" className="size-7"
+                                        onClick={() => handleStep(-1)}>
+                                    -
+                                </Button>
                                 <span className="font-mono font-bold bg-white px-3 py-0.5 rounded-lg border border-blue-haze-400 min-w-12 text-center text-slate-700 shadow-inner">
                                     {localQuantite.quantite}
                                 </span>
-                                <Button type="button" variant="primary" className="size-7" children={"+"}
-                                        onClick={() => handleStep(1)}/>
+                                <Button type="button" variant="primary" className="size-7"
+                                        onClick={() => handleStep(1)}>
+                                    +
+                                </Button>
                                 <Button type={"button"} variant={"confirm"} className={"p-1.5 h-7"}
-                                        children={<svg className="size-4"><use href="/sprite.svg#check" /></svg>}
-                                        onClick={handleModQuantite}
-                                />
-                                <Button type={"button"} variant={"danger"} children={"Annuler"}
-                                        className={"p-1.5 h-7 text-xs w-13"} onClick={changerIsEditingQuantite}/>
+                                        onClick={handleModQuantite}>
+                                    <svg className="size-4"><use href="/sprite.svg#check" /></svg>
+                                </Button>
+                                <Button type={"button"} variant={"danger"} className={"p-1.5 h-7 text-xs w-13"}
+                                        onClick={changerIsEditingQuantite}>
+                                    Annuler
+                                </Button>
                             </>
                         )}
                     </div>

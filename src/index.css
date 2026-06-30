@@ -97,7 +97,7 @@
 
 /*dashboard*/
 .dashboard-titre{
-    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 px-2 py-2 z-50 border-b-2 border-blue-haze-500 rounded-b-xl shadow-sm
+    @apply text-2xl font-bold text-blue-haze-title mb-4 absolute bg-blue-haze-100 w-full right-0 top-0 px-2 py-2 z-40 border-b-2 border-blue-haze-500 rounded-b-xl shadow-sm
 }
 .dashboard-screen{
     @apply  flex flex-col

@@ -8,6 +8,28 @@ import Button from "../../../components/Button.tsx";
 import {getFamilleIdFromToken} from "../../../utils/jwtUtils.ts";
 import LoadingModal from "../../../components/LoadingModal.tsx";
 
+const INPUTS: {
+    id: number,
+    name: keyof LoginRequestDto,
+    type: string,
+    placeholder: string,
+    label: string
+}[] = [
+    {
+        id:1,
+        name:"courriel",
+        type:"email",
+        placeholder:"vous@exemple.com",
+        label: "Courriel"
+    },
+    {
+        id:2,
+        name:"motPasse",
+        type:"password",
+        placeholder:"•••••",
+        label: "Mot de passe"
+    }
+]
 const LoginPage = () => {
     const [values, setValues] = useState<LoginRequestDto>(
         {
@@ -19,28 +41,7 @@ const LoginPage = () => {
     const [disableButton, setDisableButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const inputs: {
-        id: number,
-        name: keyof LoginRequestDto,
-        type: string,
-        placeholder: string,
-        label: string
-    }[] = [
-        {
-            id:1,
-            name:"courriel",
-            type:"email",
-            placeholder:"vous@exemple.com",
-            label: "Courriel"
-        },
-        {
-            id:2,
-            name:"motPasse",
-            type:"password",
-            placeholder:"•••••",
-            label: "Mot de passe"
-        }
-    ]
+
 
     const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -96,7 +97,7 @@ const LoginPage = () => {
                 </div>
             <form onSubmit={handleLogin}
                 className="forms-style">
-                {inputs.map((input) => (
+                {INPUTS.map((input) => (
                             <FormInputs
                                 key={input.id}
                                 placeholder={input.placeholder}
@@ -112,18 +113,18 @@ const LoginPage = () => {
                             {error}
                         </p>
                     )}
-                    <Button type={"submit"} variant={"primary"} fullWidth disabled={disableButton}
-                        children={disableButton ? "Connexion en cours... Veuillez patienter..." : "Se connecter"}
-                    />
+                    <Button type={"submit"} variant={"primary"} fullWidth disabled={disableButton}>
+                        {disableButton ? "Connexion en cours... Veuillez patienter..." : "Se connecter"}
+                    </Button>
                     <Button type={"button"} variant={"outline"} fullWidth
                             disabled={disableButton}
                             onClick={
                                 () => {
                                     navigate('/register');
                                 }
-                            }
-                            children={"Créer un compte"}
-                    />
+                            }>
+                            Créer un compte
+                    </Button>
                 </form>
                 {isLoading && <LoadingModal title={"Connexion en cours..."}/>}
             </div>

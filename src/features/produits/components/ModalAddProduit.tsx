@@ -81,10 +81,12 @@ const ModalAddProduit = ({switcherModal, onSuccess}: {switcherModal: ()=>void, o
                             </p>
                         )}
                         <div className={"p-2 flex flex-row gap-2"}>
-                            <Button variant={"primary"} type={"submit"} fullWidth
-                                    children={"Confirmer"}/>
-                            <Button variant={"outline"} type={"button"} fullWidth
-                                    children={"Annuler"} onClick={switcherModal}/>
+                            <Button variant={"primary"} type={"submit"} fullWidth>
+                                Confirmer
+                            </Button>
+                            <Button variant={"outline"} type={"button"} fullWidth onClick={switcherModal}>
+                                Annuler
+                            </Button>
                         </div>
                     </form>
 

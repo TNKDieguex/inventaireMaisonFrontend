@@ -91,13 +91,10 @@ const CreationProduit = () => {
                                                 <span className="text-gray-500">Catégorie: {(prod.categorieProduit).toString().toLowerCase().replace(/_/g, ' ')}</span>
                                             </div>
                                             <span>
-                                                <Button type={"button"} variant={"danger"} onClick={()=>{
-                                                    supprimerProduitDeListe(idx)
-                                                }}
-                                                children={
+                                                <Button type={"button"} variant={"danger"}
+                                                        onClick={()=>{supprimerProduitDeListe(idx)}}>
                                                     <svg className={"size-5" }><use href={"/sprite.svg#trash"}/></svg>
-                                                }
-                                                />
+                                                </Button>
                                             </span>
                                         </div>
                                     ))}
@@ -105,11 +102,15 @@ const CreationProduit = () => {
                             ) : (
                                 <p className="text-gray-500 text-sm italic py-1">Aucun produit ajouté a la lista temporal.</p>
                             )}
-                            <Button fullWidth type={"button"} children={"+ Ajouter un produit"} onClick={switchModal} />
+                            <Button fullWidth type={"button"} onClick={switchModal}>
+                                + Ajouter un produit
+                            </Button>
                         </div>
                     </div>
                     <div className={"pt-4 border-t border-blue-haze-300"}>
-                        <Button className={"w-4/12"} type={"button"} children={"Sauvegarder produits"} onClick={postProduits} />
+                        <Button className={"w-4/12"} type={"button"} onClick={postProduits}>
+                            Sauvegarder produits
+                        </Button>
                     </div>
                 </>
             )}

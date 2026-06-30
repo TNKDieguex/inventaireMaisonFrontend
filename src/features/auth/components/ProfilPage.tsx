@@ -116,8 +116,9 @@ const ProfilPage = () => {
                                     type="button"
                                     variant="danger"
                                     fullWidth
-                                    onClick={() => setShowConfirmQuitter(true)}
-                                    children="Quitter la famille"/>
+                                    onClick={() => setShowConfirmQuitter(true)}>
+                                    Quitter la famille
+                                </Button>
                             ) : (
                                 <p className="text-xs text-gray-400 italic">Vous n'êtes associé à aucune famille.</p>
                             )}
@@ -146,8 +147,12 @@ const ProfilPage = () => {
                             Voulez-vous vraiment quitter votre famille ? Vous perdrez l'accès immédiat à l'inventaire partagé.
                         </p>
                         <div className="flex flex-row gap-2 w-full pt-2">
-                            <Button type="button" variant="danger" fullWidth children="Oui, quitter" onClick={handleQuitterFamille} />
-                            <Button type="button" variant="outline" fullWidth children="Annuler" onClick={() => setShowConfirmQuitter(false)} />
+                            <Button type="button" variant="danger" fullWidth onClick={handleQuitterFamille}>
+                                Oui, quitter
+                            </Button>
+                            <Button type="button" variant="outline" fullWidth onClick={() => setShowConfirmQuitter(false)}>
+                                Annuler
+                            </Button>
                         </div>
                     </div>
                 </div>

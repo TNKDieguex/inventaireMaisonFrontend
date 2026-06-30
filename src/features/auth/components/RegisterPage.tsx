@@ -7,6 +7,17 @@ import axiosClient from "../../../api/axiosClient.ts";
 import axios from "axios";
 import LoadingModal from "../../../components/LoadingModal.tsx";
 
+const INPUTS: { id: number,
+    name: keyof CreationUtilisateur,
+    type: string,
+    placeholder: string,
+    label: string}[] = [
+    { id: 1, name: "nom", type: "text", placeholder: "Laufey Lín Bing", label: "Nom"},
+    { id: 2, name: "courriel", type: "email", placeholder: "vous@exemple.com" ,label:"Courriel"},
+    { id: 3, name: "motPasse", type: "password", placeholder: "•••••", label: "Mot de passe"},
+    { id: 4, name: "motPasseConfirmation", type: "password", placeholder: "•••••",label: "Confirmation de mot de passe"}
+];
+
 const RegisterPage = () => {
     const [values, setValues] = useState<CreationUtilisateur>({
         nom: '',
@@ -20,16 +31,7 @@ const RegisterPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const inputs: { id: number,
-        name: keyof CreationUtilisateur,
-        type: string,
-        placeholder: string,
-        label: string}[] = [
-        { id: 1, name: "nom", type: "text", placeholder: "Laufey Lín Bing", label: "Nom"},
-        { id: 2, name: "courriel", type: "email", placeholder: "vous@exemple.com" ,label:"Courriel"},
-        { id: 3, name: "motPasse", type: "password", placeholder: "•••••", label: "Mot de passe"},
-        { id: 4, name: "motPasseConfirmation", type: "password", placeholder: "•••••",label: "Confirmation de mot de passe"}
-    ];
+
 
     const handleRegister = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -96,7 +98,7 @@ const RegisterPage = () => {
                 </div>
             <form onSubmit={handleRegister}
                   className="forms-style">
-                {inputs.map((input) => (
+                {INPUTS.map((input) => (
                     <FormInputs
                         key={input.id}
                         placeholder={input.placeholder}
@@ -112,11 +114,13 @@ const RegisterPage = () => {
                         {error}
                     </p>
                 )}
-                <Button type="submit" variant="primary" fullWidth disabled={disableButton}
-                        children={disableButton ? "Création en cours..." : "Créer un compte"}/>
+                <Button type="submit" variant="primary" fullWidth disabled={disableButton}>
+                    {disableButton ? "Création en cours..." : "Créer un compte"}
+                </Button>
 
-                <Button type="button" variant="outline" fullWidth onClick={() => navigate('/login')}
-                    children={"Déjà un compte? Se connecter"}/>
+                <Button type="button" variant="outline" fullWidth onClick={() => navigate('/login')}>
+                    Déjà un compte? Se connecter
+                </Button>
             </form>
                 {isLoading && <LoadingModal title={"Création de votre compte..."}/>}
         </div>
