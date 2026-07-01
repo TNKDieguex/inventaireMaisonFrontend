@@ -18,13 +18,13 @@ const FormInputs = ({placeholder, type, value, onChange, name, label, maxLength,
     const isSelectType = type === 'select';
     const currentLength = String(value ?? '').length;
     const handleStep = (amount: number) => {
-        const valorActual = value === '' ? 0 : Number(value);
-        const nuevoValor = Math.max(0, valorActual + amount);
+        const valeurActuelle = value === '' ? 0 : Number(value);
+        const nouveauValeur = Math.max(0, valeurActuelle + amount);
 
         onChange({
             target: {
                 name,
-                value: String(nuevoValor)
+                value: String(nouveauValeur)
             }
         } as React.ChangeEvent<HTMLInputElement>);
     };

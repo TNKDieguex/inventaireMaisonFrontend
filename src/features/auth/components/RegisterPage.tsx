@@ -54,7 +54,7 @@ const RegisterPage = () => {
             setDisableButton(false);
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 const messageDuBackend = erreur.response?.data?.message;
-                setError(messageDuBackend || "Échec de la création du compte.");
+                setError(messageDuBackend || 'Échec de la création du compte.');
             } else {
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }

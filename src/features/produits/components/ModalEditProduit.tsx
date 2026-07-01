@@ -64,10 +64,9 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
             setIsLoading(false);
         }catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la connexion.');
+                setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
             } else {
-                console.log(erreur)
-                setError('Une erreur inattendue es survenue.');
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         }
     }

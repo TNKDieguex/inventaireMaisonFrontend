@@ -56,7 +56,6 @@ const LoginPage = () => {
             const response = await axiosClient.post<AuthResponseDto>('/utilisateurs/connexion', values);
             const token = response.data.token;
             localStorage.setItem('token', token);
-            sessionStorage.setItem('user', JSON.stringify({courriel: values.courriel}));
             setValues({
                 courriel: '',
                 motPasse: ''
@@ -83,7 +82,6 @@ const LoginPage = () => {
     const isValid = () =>{
         return !(values.courriel === '' || values.motPasse === '');
     }
-    
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setValues({...values,[e.target.name]: e.target.value});
     }

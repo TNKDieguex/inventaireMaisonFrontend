@@ -52,10 +52,10 @@ const ItemProduit = ({produit, onSuccess}:{produit: ProduitDto, onSuccess: ()=>v
             onSuccess();
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la connexion.');
+                setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
             } else {
-                console.log(erreur)
-                setError('Une erreur inattendue es survenue.');
+                console.error(erreur)
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         } finally {
             setIsEditingNote(false);
@@ -77,7 +77,7 @@ const ItemProduit = ({produit, onSuccess}:{produit: ProduitDto, onSuccess: ()=>v
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 setError(erreur.response?.data?.message || 'Échec de la connexion.');
             } else {
-                console.log(erreur)
+                console.error(erreur)
                 setError('Une erreur inattendue es survenue.');
             }
         } finally {
