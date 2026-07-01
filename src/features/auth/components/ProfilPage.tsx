@@ -1,7 +1,7 @@
 import {useState} from "react";
 import LoadingModal from "../../../components/LoadingModal.tsx";
 import type {AuthResponseDto, ErreurResponseDto, UserData} from "../types";
-import {getFamilleIdFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
+import {getFamilleIdFromToken, getUserInfoFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
 import Button from "../../../components/Button.tsx";
 import axiosClient from "../../../api/axiosClient.ts";
 import {useNavigate} from "react-router-dom";
@@ -14,42 +14,31 @@ const ProfilPage = () => {
     const navigate = useNavigate();
 
     const [userData] = useState<UserData>(() => {
-        try {
-            const token = localStorage.getItem('token');
-            const fUuid = token ? getFamilleIdFromToken(token) : null;
-            const cachedUserData = sessionStorage.getItem('user');
-            if (!cachedUserData || !fUuid) {
-                return { nom: "", courriel: "", familleUuid: "", userUuid: "" };
-            }
-            let courrielCible = "";
-            try {
-                const parsed = JSON.parse(cachedUserData);
-                courrielCible = typeof parsed === 'object' && parsed !== null && 'courriel' in parsed
-                    ? parsed.courriel
-                    : parsed;
-            } catch {
-                courrielCible = cachedUserData;
-            }
-            const familiaCache = getValidCachedFamille(fUuid);
+        const token = localStorage.getItem('token');
+        const tokenInfo = getUserInfoFromToken(token);
+        const fUuid = token ? getFamilleIdFromToken(token) : null;
 
-            if (familiaCache?.utilisateurs) {
-                const utilisateurCourant = familiaCache.utilisateurs.find(
-                    (u) => u.courriel.toLowerCase().trim() === courrielCible.toLowerCase().trim()
-                );
-
-                if (utilisateurCourant) {
-                    return {
-                        nom: utilisateurCourant.nom,
-                        courriel: utilisateurCourant.courriel,
-                        familleUuid: fUuid,
-                        userUuid: utilisateurCourant.uuid || ""
-                    };
-                }
-            }
-        } catch (err) {
-            console.error("Erreur lors du chargement des données locales:", err);
+        if (!tokenInfo || !fUuid) {
+            return { nom: "", courriel: (tokenInfo?.courriel || ""), familleUuid: "", userUuid: "" };
         }
-        return { nom: "", courriel: "", familleUuid: "", userUuid: "" };
+        const familiaCache = getValidCachedFamille(fUuid);
+        let utilisateur = "Utilisateur";
+
+        if (familiaCache?.utilisateurs) {
+            const utilisateurTrouve = familiaCache.utilisateurs.find(
+                (u) => u.courriel.toLowerCase().trim() === tokenInfo.courriel.toLowerCase().trim()
+            );
+            if (utilisateurTrouve) {
+                utilisateur = utilisateurTrouve.nom;
+            }
+        }
+
+        return {
+            nom: utilisateur,
+            courriel: tokenInfo.courriel,
+            familleUuid: fUuid,
+            userUuid: tokenInfo.nom
+        };
     });
 
     const handleQuitterFamille = async () => {
