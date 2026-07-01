@@ -7,6 +7,7 @@ import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
 import LoadingModal from "../../../components/LoadingModal.tsx";
 import {fetchAndCacheProduits} from "../../../utils/ProduitCache.ts";
+import Button from "../../../components/Button.tsx";
 
 const ListeProduits = () => {
     const navigate = useNavigate();
@@ -30,9 +31,9 @@ const ListeProduits = () => {
             setListeProduits(data);
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la connexion.');
+                setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
             } else {
-                setError('Une erreur inattendue es survenue.');
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         } finally {
             setIsLoading(false);
@@ -55,6 +56,9 @@ const ListeProduits = () => {
             void ejecutarFetch();
         }
     }, [familleUuid, navigate, fetchListeProduits]);
+    const handleRetourner = () => {
+        navigate('/dashboard');
+    }
 
     const produitsFiltres = useMemo(() => {
         if (categorieSelectionnee === 'TOUS') return listeProduits;
@@ -65,8 +69,20 @@ const ListeProduits = () => {
     
     return (
         <div className={"dashboard-screen"}>
-            <h1 className="dashboard-titre">
-                Liste des produits</h1>
+            <div className="dashboard-titre flex flex-row gap-2">
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size={"sm"}
+                    onClick={handleRetourner}
+                >
+                    <svg className={"size-5"}>
+                        <use href="/sprite.svg#arrowLeft" />
+                    </svg>
+                </Button>
+                <h1>
+                    Liste des produits</h1>
+            </div>
             {error && (
                 <div className={"dashboard-screen-enfant"}>
                     <p className="error">
