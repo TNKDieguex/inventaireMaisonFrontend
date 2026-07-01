@@ -13,9 +13,6 @@ export const fetchAndCacheProduits = async (familleUuid: string): Promise<Produi
 
 export const creerProduits = async (familleUuid: string|null, listeProduits: CreateProduitDto[]): Promise<ProduitDto[]> => {
     const response = await axiosClient.post<ProduitDto[]>('/produits/creation', listeProduits);
-    sessionStorage.setItem(`produits_famille_${familleUuid}`, JSON.stringify({
-        data: response.data,
-        timestamp: Date
-        }));
+    sessionStorage.removeItem(`produits_famille_${familleUuid}`);
     return response.data;
 };

@@ -1,4 +1,4 @@
-import type {ProduitDto} from "../features/produits/types";
+import type {ManualItem, ProduitDto} from "../features/produits/types";
 import type {FamilleDto} from "../features/famille/types";
 import axiosClient from "../api/axiosClient.ts";
 
@@ -15,6 +15,24 @@ export const getFamilleIdFromToken = (token: string | null): string | null => {
         return null;
     }
 };
+
+export const getUserInfoFromToken = (token: string | null): {nom: string, courriel: string}|null =>{
+    if (!token) return null;
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+        const payload = JSON.parse(window.atob(base64));
+        return {
+            nom: payload.utilisateurUuid || "",
+            courriel: payload.sub,
+        }
+    } catch (error) {
+        console.error("Error al decodificar el JWT:", error);
+        return null;
+    }
+};
+
 export const getValidCachedProduits = (familleUuid: string | null): ProduitDto[] | undefined => {
     if (!familleUuid) return undefined;
     const cachedRaw = sessionStorage.getItem(`produits_famille_${familleUuid}`);
@@ -61,3 +79,16 @@ export const fetchFamilleAndPutCache = async (familleUuid: string | null) : Prom
     sessionStorage.setItem(`famille_info_${familleUuid}`, JSON.stringify(cacheContainer));
     return response.data;
 }
+
+export const getShoppingListFromCache = (familleUuid: string | null): { manualItems: ManualItem[], checkedItems: string[] } => {
+    if (!familleUuid) return { manualItems: [], checkedItems: [] };
+    const manualItems = JSON.parse(sessionStorage.getItem(`shopping_list_manual_${familleUuid}`) || '[]') as ManualItem[];
+    const checkedItems = JSON.parse(sessionStorage.getItem(`shopping_list_checked_${familleUuid}`) || '[]') as string[];
+    return { manualItems, checkedItems };
+};
+
+export const saveShoppingListToCache = (familleUuid: string | null, manualItems: ManualItem[], checkedItems: Set<string>) => {
+    if (!familleUuid) return;
+    sessionStorage.setItem(`shopping_list_manual_${familleUuid}`, JSON.stringify(manualItems));
+    sessionStorage.setItem(`shopping_list_checked_${familleUuid}`, JSON.stringify(Array.from(checkedItems)));
+};
