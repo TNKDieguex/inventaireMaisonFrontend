@@ -10,13 +10,17 @@ import type {ErreurResponseDto} from "../../auth/types";
 const FamillePage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
-    const [cooldown, setCooldown] = useState(0);
     const [isUuidVisible, setIsUuidVisible] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
 
     const [familleUuid] = useState<string | null>(()=>{
         const token = localStorage.getItem('token');
         return token ? getFamilleIdFromToken(token) : null;
+    });
+    const [cooldown, setCooldown] = useState<number>(() => {
+        if (!familleUuid) return 0;
+        const savedCooldown = localStorage.getItem(`famille_refresh_cooldown_${familleUuid}`);
+        return savedCooldown ? parseInt(savedCooldown, 10) : 0;
     });
     const [familleInfo, setFamilleInfo] = useState<FamilleDto | undefined>(() => {
         return getValidCachedFamille(familleUuid);
@@ -40,10 +44,13 @@ const FamillePage = () => {
 
     useEffect(() => {
         if (cooldown > 0) {
+            localStorage.setItem(`famille_refresh_cooldown_${familleUuid}`, cooldown.toString());
             const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
             return () => clearTimeout(timer);
+        } else {
+            localStorage.removeItem(`famille_refresh_cooldown_${familleUuid}`);
         }
-    }, [cooldown]);
+    }, [cooldown, familleUuid]);
 
     useEffect(() => {
         if (!familleUuid || getValidCachedFamille(familleUuid)) return;
