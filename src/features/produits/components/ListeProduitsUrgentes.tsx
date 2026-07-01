@@ -6,32 +6,59 @@ import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
 import ItemProduit from "./ItemProduit.tsx";
 import LoadingModal from "../../../components/LoadingModal.tsx";
+import {fetchAndCacheProduits} from "../../../utils/ProduitCache.ts";
+import {useNavigate} from "react-router-dom";
+import Button from "../../../components/Button.tsx";
 
 const ListeProduitsUrgentes = () => {
-    const [listeDUrgence, setListeDUrgence] = useState<ProduitDto[]>();
+    const navigate = useNavigate();
+    const [listeDUrgence, setListeDUrgence] = useState<ProduitDto[]>([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [aEteModifie, setAEteModifie] = useState(false);
     const [familleUuid] = useState<string | null>(() => {
         const token = localStorage.getItem('token');
         return token ? getFamilleIdFromToken(token) : null;
     });
-    const fetchProduitsUrgentes = useCallback(async () => {
+
+    const fetchProduitsUrgentes = useCallback(async (silencioso = false) => {
         if (!familleUuid) return;
         try {
             setError('');
-            setIsLoading(true);
+            if (!silencioso) setIsLoading(true);
             const response = await axiosClient.get<ProduitDto[]>('/produits/liste-alertes-achats');
             setListeDUrgence(response.data);
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la connexion.');
+                setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
             } else {
-                setError('Une erreur inattendue est survenue.');
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         } finally {
             setIsLoading(false);
         }
     }, [familleUuid]);
+
+    const handleItemMutation = useCallback(() => {
+        setAEteModifie(true);
+        void fetchProduitsUrgentes(true);
+    }, [fetchProduitsUrgentes]);
+
+    const handleRetourner = async () => {
+        if (!familleUuid || !aEteModifie) {
+            navigate('/dashboard');
+            return;
+        }
+        try {
+            setIsLoading(true);
+            await fetchAndCacheProduits(familleUuid);
+        } catch (e) {
+            console.error('Erreur lors de la mise à jour du cache des produits :', e);
+        } finally {
+            setIsLoading(false);
+            navigate('/dashboard');
+        }
+    };
 
     useEffect(() => {
         const executerChargementDonnees = async () => {
@@ -42,8 +69,21 @@ const ListeProduitsUrgentes = () => {
 
     return (
         <div className={"dashboard-screen"}>
-            <h1 className="dashboard-titre">
-                Produits Urgentes</h1>
+            <div className="dashboard-titre flex flex-row gap-2">
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size={"sm"}
+                    onClick={handleRetourner}
+                >
+                    <svg className={"size-5"}>
+                        <use href="/sprite.svg#arrowLeft" />
+                    </svg>
+                </Button>
+                <h1>
+                    Produits Urgentes
+                </h1>
+            </div>
             {error && (
                 <div className={"dashboard-screen-enfant"}>
                     <p className="error">
@@ -55,7 +95,7 @@ const ListeProduitsUrgentes = () => {
                 <div className={"dashboard-screen-enfant"}>
                     {listeDUrgence && listeDUrgence.length>0 ?(
                         [...listeDUrgence].map((produit) => (
-                                <ItemProduit key={produit.uuid} produit={produit} onSuccess={fetchProduitsUrgentes}/>
+                                <ItemProduit key={produit.uuid} produit={produit} onSuccess={handleItemMutation}/>
                             )
                         )):(
                         <p className={"text-gray-500"}>
