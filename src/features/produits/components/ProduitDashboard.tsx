@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {ProduitDto} from "../types";
 import {useNavigate} from "react-router-dom";
 import {
@@ -18,16 +18,21 @@ const ProduitDashboard = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [menuOuvert, setMenuOuvert] = useState(false);
-    const [cooldown, setCooldown] = useState(0);
+    const cargandoDatosRef = useRef(false);
 
     const [familleUuid] = useState<string | null>(() => {
         const token = localStorage.getItem('token');
         return token ? getFamilleIdFromToken(token) : null;
     });
+    const [cooldown, setCooldown] = useState<number>(() => {
+        if (!familleUuid) return 0;
+        const savedCooldown = localStorage.getItem(`dashboard_refresh_cooldown_${familleUuid}`);
+        return savedCooldown ? parseInt(savedCooldown, 10) : 0;
+    });
 
-    const [listeProduits, setListeProduits] = useState<ProduitDto[] | undefined>(()=>{
-            return getValidCachedProduits(familleUuid);
-        });
+    const [listeProduits, setListeProduits] = useState<ProduitDto[]>(()=>{
+        return getValidCachedProduits(familleUuid) || [];
+    });
 
     const stats = useMemo(()=>{
         if (!listeProduits || listeProduits.length === 0) {
@@ -49,10 +54,11 @@ const ProduitDashboard = () => {
     }, [listeProduits]);
 
     const fetchListeProduitsAndFamille = useCallback(async () => {
-        if (!familleUuid) return;
+        if (!familleUuid || cargandoDatosRef.current) return;
         try {
             setError('');
             setIsLoading(true);
+            cargandoDatosRef.current = true;
 
             const tasks = [];
             if (!getValidCachedProduits(familleUuid)) {
@@ -75,6 +81,7 @@ const ProduitDashboard = () => {
             }
         } finally {
             setIsLoading(false);
+            cargandoDatosRef.current = false;
         }
     }, [familleUuid]);
     const handleRefreshProduits = async () => {
@@ -90,9 +97,9 @@ const ProduitDashboard = () => {
             setListeProduits(data);
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la mise à jour.');
+                setError(erreur.response?.data?.message || 'Échec de la mise à jour. Veuillez réessayer.');
             } else {
-                setError('Une erreur est survenue.');
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         } finally {
             setIsLoading(false);
@@ -109,13 +116,18 @@ const ProduitDashboard = () => {
     }
 
     useEffect(() => {
-        if (!familleUuid) return;
-        const hasProduits = !!getValidCachedProduits(familleUuid);
-        const hasFamille = !!getValidCachedFamille(familleUuid);
-        if (cooldown > 0) {
+        if (cooldown > 0 && familleUuid) {
+            localStorage.setItem(`dashboard_refresh_cooldown_${familleUuid}`, cooldown.toString());
             const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
             return () => clearTimeout(timer);
+        } else if (familleUuid) {
+            localStorage.removeItem(`dashboard_refresh_cooldown_${familleUuid}`);
         }
+
+        if (!familleUuid || isLoading || cargandoDatosRef.current) return;
+
+        const hasProduits = !!getValidCachedProduits(familleUuid);
+        const hasFamille = !!getValidCachedFamille(familleUuid);
 
         if (!hasProduits || !hasFamille) {
             const initDashboard = async () => {
@@ -123,7 +135,7 @@ const ProduitDashboard = () => {
             };
             void initDashboard();
         }
-    }, [familleUuid, fetchListeProduitsAndFamille, cooldown]);
+    }, [familleUuid, fetchListeProduitsAndFamille, cooldown, isLoading]);
 
     const totalProducts = stats.total || 1;
     const barreProgress = [
@@ -203,7 +215,7 @@ const ProduitDashboard = () => {
                     </div>
                     <div className="flex flex-row gap-3">
                         <div className={"dashboard-sections w-5/12 min-h-30 hover:cursor-pointer"}
-                            onClick={() => {}}>
+                             onClick={()=>{navigate('/produits/listeCourses')}}>
 
                         <div className={"flex flex-col justify-between items-center gap-2"}>
                             <p className="font-bold text-gray-800">Liste de courses</p>
