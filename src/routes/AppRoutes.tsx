@@ -10,6 +10,7 @@ import ListeProduits from "../features/produits/components/ListeProduits.tsx";
 import ListeProduitsUrgentes from "../features/produits/components/ListeProduitsUrgentes.tsx";
 import CreationProduit from "../features/produits/components/CreationProduit.tsx";
 import ProfilPage from "../features/auth/components/ProfilPage.tsx";
+import ListeCourses from "../features/produits/components/ListeCourses.tsx";
 
 const AppRoutes = () => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -31,6 +32,7 @@ const AppRoutes = () => {
                     <Route path="/produits" element={<ListeProduits />}/>
                     <Route path="/produits/liste-alertes-achats" element={<ListeProduitsUrgentes />} />
                     <Route path="/produits/creation" element={<CreationProduit />} />
+                    <Route path="/produits/listeCourses" element={<ListeCourses />} />
                 </Route>
 
                 <Route path={"*"} element={<Navigate to={"/login"} replace />}/>
