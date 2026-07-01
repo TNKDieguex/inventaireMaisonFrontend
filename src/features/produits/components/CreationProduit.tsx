@@ -41,18 +41,21 @@ const CreationProduit = () => {
 
         } catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
-                setError(erreur.response?.data?.message || 'Échec de la connexion.');
+                setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
             } else {
-                setError('Une erreur inattendue es survenue.');
+                setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
         }
     };
-    const supprimerProduitDeListe = (pos: number) => {
+    const supprimerProduitListe = (pos: number) => {
         setListeProduitsACreer(
-                listeProduitsACreer.filter((produit)=>{
-                    return listeProduitsACreer.indexOf(produit) !== pos;
-                })
+            listeProduitsACreer.filter((produit)=>{
+                return listeProduitsACreer.indexOf(produit) !== pos;
+            })
         )
+    }
+    const handleRetourner = () => {
+        navigate('/dashboard');
     }
 
     useEffect(() => {
@@ -61,8 +64,20 @@ const CreationProduit = () => {
 
     return (
         <div className={"dashboard-screen"}>
-            <h1 className={"dashboard-titre"}>
+            <div className="dashboard-titre flex flex-row gap-2">
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size={"sm"}
+                    onClick={handleRetourner}
+                >
+                    <svg className={"size-5"}>
+                        <use href="/sprite.svg#arrowLeft" />
+                    </svg>
+                </Button>
+                <h1>
                 Création Produits </h1>
+            </div>
             {error && (
                 <div className={"dashboard-screen-enfant"}>
                         <p className="error">
@@ -75,24 +90,24 @@ const CreationProduit = () => {
                     {montrerModalAddProduit &&
                         <ModalAddProduit switcherModal={switchModal} onSuccess={handleAjouterProduitALaQueue}/>
                     }
-                    <div className={"dashboard-screen-enfant"}>
+                    <div className={"dashboard-screen-enfant pb-12"}>
                         <div className="information-div space-y-2">
                             <h3 className="font-bold texte border-b border-blue-haze-300 pb-1">
                                 Produits en attente ({listeProduitsACreer.length})
                             </h3>
 
                             {listeProduitsACreer.length > 0 ? (
-                                <div className="space-y-1.5 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-haze-400">
+                                <div className="space-y-1.5 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-haze-400 text-sm">
                                     {listeProduitsACreer.map((prod, idx) => (
                                         <div key={idx} className="flex justify-between bg-blue-haze-50 p-2 rounded-lg border border-blue-haze-100 items-center">
                                             <span className="font-semibold text-gray-800 capitalize">{prod.nom}</span>
-                                            <div className={"flex flex-col gap-1 items-center text-xs"}>
+                                            <div className={"flex flex-col gap-1 items-center "}>
                                                 <span className="text-gray-500">Cant: {prod.quantite} | Min: {prod.quantiteMinimal}</span>
                                                 <span className="text-gray-500">Catégorie: {(prod.categorieProduit).toString().toLowerCase().replace(/_/g, ' ')}</span>
                                             </div>
                                             <span>
                                                 <Button type={"button"} variant={"danger"}
-                                                        onClick={()=>{supprimerProduitDeListe(idx)}}>
+                                                        onClick={()=>{supprimerProduitListe(idx)}}>
                                                     <svg className={"size-5" }><use href={"/sprite.svg#trash"}/></svg>
                                                 </Button>
                                             </span>
