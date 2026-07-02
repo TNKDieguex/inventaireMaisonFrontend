@@ -6,7 +6,6 @@ import type {AuthResponseDto, ErreurResponseDto, LoginRequestDto} from "../types
 import axios from "axios";
 import Button from "../../../components/Button.tsx";
 import {getFamilleIdFromToken} from "../../../utils/jwtUtils.ts";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 
 const INPUTS: {
     id: number,
@@ -39,7 +38,6 @@ const LoginPage = () => {
     );
     const [error, setError] = useState('');
     const [disableButton, setDisableButton] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
 
@@ -52,7 +50,6 @@ const LoginPage = () => {
         setError('');
         try {
             setDisableButton(true);
-            setIsLoading(true);
             const response = await axiosClient.post<AuthResponseDto>('/utilisateurs/connexion', values);
             const token = response.data.token;
             localStorage.setItem('token', token);
@@ -75,8 +72,6 @@ const LoginPage = () => {
             }else{
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.')
             }
-        }finally {
-            setIsLoading(false);
         }
     }
     const isValid = () =>{
@@ -124,7 +119,6 @@ const LoginPage = () => {
                             Créer un compte
                     </Button>
                 </form>
-                {isLoading && <LoadingModal title={"Connexion en cours..."}/>}
             </div>
         </div>
     );

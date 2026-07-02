@@ -2,7 +2,6 @@ import type {ProduitDto, UpdateProduitDto} from "../types";
 import Button from "../../../components/Button.tsx";
 import React, {type SyntheticEvent, useState} from "react";
 import FormInputs from "../../../components/FormInputs.tsx";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
 import axiosClient from "../../../api/axiosClient.ts";
@@ -13,7 +12,6 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
                               onSuccess: ()=> void
                           }) => {
     const [validation, setValidation] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
     const [values, setValues] = useState<UpdateProduitDto>(
@@ -56,12 +54,10 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
             return;}
 
         try {
-            setIsLoading(true);
             await axiosClient.put<ProduitDto>('/produits/modifierProduit', values);
 
             onSuccess();
             isEditing();
-            setIsLoading(false);
         }catch (erreur: unknown) {
             if (axios.isAxiosError<ErreurResponseDto>(erreur)) {
                 setError(erreur.response?.data?.message || 'Échec de la connexion. Veuillez réessayer.');
@@ -72,7 +68,6 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
     }
     const handleDeleteProduit = async ()=>{
         try{
-            setIsLoading(true)
             setValidation(false);
             await axiosClient.delete<ProduitDto>(`/produits/${values.uuid}`);
 
@@ -84,8 +79,6 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
             } else {
                 setError('Une erreur inattendue es survenue.');
             }
-        }finally {
-            setIsLoading(false)
         }
     }
     const onchange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -163,9 +156,7 @@ const ModalEditProduit = ({produit, isEditing, onSuccess}:
                     </div>
                 </div>
             </div>}
-            {isLoading && <LoadingModal title={"Modification en cours..."}/>}
         </>
-
     );
 };
 

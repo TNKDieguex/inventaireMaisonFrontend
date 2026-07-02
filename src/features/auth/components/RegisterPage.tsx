@@ -5,7 +5,7 @@ import Button from "../../../components/Button.tsx";
 import FormInputs from "../../../components/FormInputs.tsx";
 import axiosClient from "../../../api/axiosClient.ts";
 import axios from "axios";
-import LoadingModal from "../../../components/LoadingModal.tsx";
+// import LoadingModal from "../../../components/LoadingModal.tsx";
 
 const INPUTS: { id: number,
     name: keyof CreationUtilisateur,
@@ -28,7 +28,7 @@ const RegisterPage = () => {
 
     const [error, setError] = useState('');
     const [disableButton, setDisableButton] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
 
@@ -39,7 +39,7 @@ const RegisterPage = () => {
         setError('');
         try {
             setDisableButton(true);
-            setIsLoading(true);
+            // setIsLoading(true);
             const payload: UtilisateurData = {
                 nom: values.nom,
                 courriel: values.courriel,
@@ -60,7 +60,7 @@ const RegisterPage = () => {
             }
             console.error(erreur);
         }finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 
@@ -122,7 +122,7 @@ const RegisterPage = () => {
                     Déjà un compte? Se connecter
                 </Button>
             </form>
-                {isLoading && <LoadingModal title={"Création de votre compte..."}/>}
+                {/*{isLoading && <LoadingModal title={"Création de votre compte..."}/>}*/}
         </div>
     </div>
     );

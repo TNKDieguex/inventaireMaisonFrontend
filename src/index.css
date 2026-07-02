@@ -109,7 +109,7 @@
     @apply rounded-xl flex flex-col flex-1 space-y-3 pt-12
 }
 .menu-options {
-    @apply rounded-full p-2 bg-blue-haze-600 hover:bg-blue-haze-700 text-white cursor-pointer shadow-lg transition-transform active:scale-95
+    @apply rounded-full p-2 bg-blue-haze-600 hover:bg-blue-haze-700 text-white cursor-pointer shadow-lg transition-transform active:scale-95 z-20
 }
 .menu-options-enfant {
     @apply flex flex-col space-y-2 p-2 rounded-2xl min-w-44 text-right

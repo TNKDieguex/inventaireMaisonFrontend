@@ -5,7 +5,6 @@ import axiosClient from "../../../api/axiosClient.ts";
 import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
 import ItemProduit from "./ItemProduit.tsx";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 import {fetchAndCacheProduits} from "../../../utils/ProduitCache.ts";
 import {useNavigate} from "react-router-dom";
 import Button from "../../../components/Button.tsx";
@@ -14,18 +13,16 @@ const ListeProduitsUrgentes = () => {
     const navigate = useNavigate();
     const [listeDUrgence, setListeDUrgence] = useState<ProduitDto[]>([]);
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [aEteModifie, setAEteModifie] = useState(false);
     const [familleUuid] = useState<string | null>(() => {
         const token = localStorage.getItem('token');
         return token ? getFamilleIdFromToken(token) : null;
     });
 
-    const fetchProduitsUrgentes = useCallback(async (silencioso = false) => {
+    const fetchProduitsUrgentes = useCallback(async () => {
         if (!familleUuid) return;
         try {
             setError('');
-            if (!silencioso) setIsLoading(true);
             const response = await axiosClient.get<ProduitDto[]>('/produits/liste-alertes-achats');
             setListeDUrgence(response.data);
         } catch (erreur: unknown) {
@@ -34,14 +31,12 @@ const ListeProduitsUrgentes = () => {
             } else {
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
-        } finally {
-            setIsLoading(false);
         }
     }, [familleUuid]);
 
     const handleItemMutation = useCallback(() => {
         setAEteModifie(true);
-        void fetchProduitsUrgentes(true);
+        void fetchProduitsUrgentes();
     }, [fetchProduitsUrgentes]);
 
     const handleRetourner = async () => {
@@ -50,12 +45,10 @@ const ListeProduitsUrgentes = () => {
             return;
         }
         try {
-            setIsLoading(true);
             await fetchAndCacheProduits(familleUuid);
         } catch (e) {
             console.error('Erreur lors de la mise à jour du cache des produits :', e);
         } finally {
-            setIsLoading(false);
             navigate('/dashboard');
         }
     };
@@ -104,7 +97,6 @@ const ListeProduitsUrgentes = () => {
                     )}
                 </div>
             </>)}
-            {isLoading && <LoadingModal title="Mise à jour de la liste..." />}
         </div>
     );
 };
