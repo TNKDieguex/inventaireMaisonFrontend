@@ -23,13 +23,13 @@ interface LoadingModalProps {
     title: string;
 }
 
-const IMAGES_RALSEI_COOKING=[
+const IMAGES_RALSEI_COOKING = [
     imgRalseiCocking1,
     imgRalseiCocking2,
     imgRalseiCocking3,
     imgRalseiCocking4,
-]
-const IMAGES_RALSEI_TEA=[
+];
+const IMAGES_RALSEI_TEA = [
     imgRalseiTea1,
     imgRalseiTea2,
     imgRalseiTea3,
@@ -41,56 +41,62 @@ const IMAGES_RALSEI_TEA=[
     imgRalseiTea9,
     imgRalseiTea10,
     imgRalseiTea11,
-]
-const IMAGES_RUNNING_TEAM=[
+];
+const IMAGES_RUNNING_TEAM = [
     teamRunning1,
     teamRunning2,
     teamRunning3,
     teamRunning4,
-]
+];
 
-const ANIMATION_PLAYLIST=[
+const ANIMATION_PLAYLIST = [
     IMAGES_RALSEI_TEA,
     IMAGES_RALSEI_COOKING,
     IMAGES_RUNNING_TEAM
-]
+];
 
 const LOADING_STEPS = [
-    {text: "Réveil du serveur en cours..."},
-    {text: "Préparation de votre inventaire..."},
-    {text: "Vérification de la base de données..."},
-    {text: "Comptage de vos paquets de pâtes..."}
+    { text: "Réveil du serveur en cours..." },
+    { text: "Préparation de votre inventaire..." },
+    { text: "Vérification de la base de données..." },
+    { text: "Comptage de vos paquets de pâtes..." }
 ];
 
 const LoadingModal: React.FC<LoadingModalProps> = ({ title }) => {
     const [currentStepMessage, setCurrentStepMessage] = useState(0);
     const [currentAnimIndex, setCurrentAnimIndex] = useState(0);
     const [currentFrame, setCurrentFrame] = useState(0);
+
     const currentAnim = ANIMATION_PLAYLIST[currentAnimIndex];
 
     useEffect(() => {
         const intervalMessage = setInterval(() => {
-            setCurrentStepMessage((prevStep) => (prevStep + 1) % LOADING_STEPS.length);
+            setCurrentStepMessage((prev) => (prev + 1) % LOADING_STEPS.length);
         }, 3000);
-        const intervalFrame = setInterval(() => {
-            setCurrentFrame((prev) => (prev + 1) % currentAnim.length);
-        }, 400);
-        const timeoutSwitch = setTimeout(() => {
-            setCurrentAnimIndex((prevIndex) => (prevIndex + 1) % ANIMATION_PLAYLIST.length);
+        return () => clearInterval(intervalMessage);
+    }, []);
+
+    useEffect(() => {
+        const timeoutSwitch = setInterval(() => {
+            setCurrentAnimIndex((prev) => (prev + 1) % ANIMATION_PLAYLIST.length);
             setCurrentFrame(0);
         }, 10000);
-        return () => {
-            clearInterval(intervalMessage)
-            clearInterval(intervalFrame)
-            clearInterval(timeoutSwitch)};
-    }, [currentAnimIndex, currentAnim.length]);
+        return () => clearInterval(timeoutSwitch);
+    }, []);
+
+    useEffect(() => {
+        const intervalFrame = setInterval(() => {
+            setCurrentFrame((prev) => {
+                const totalFrames = ANIMATION_PLAYLIST[currentAnimIndex].length;
+                return (prev + 1) % totalFrames;
+            });
+        }, 400);
+        return () => clearInterval(intervalFrame);
+    }, [currentAnimIndex]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 backdrop-blur-sm select-none pointer-events-auto">
-            <div className="bg-white p-8 rounded-2xl
-            shadow-2xl max-w-sm w-full mx-4 flex flex-col
-            items-center text-center space-y-6 border border-gray-100
-            transform transition-all duration-100 scale-100">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full mx-4 flex flex-col items-center text-center space-y-6 border border-gray-100 transform transition-all duration-100 scale-100">
                 <h3 className="titre">{title}</h3>
 
                 <div className="w-36 h-36 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-50">
