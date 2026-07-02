@@ -9,16 +9,14 @@ import {
 } from "../../../utils/jwtUtils.ts";
 import type {ErreurResponseDto} from "../../auth/types";
 import axios from "axios";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 import {fetchAndCacheProduits} from "../../../utils/ProduitCache.ts";
 import {calculerJoursRestants} from "../../../utils/ExportMethodes.ts";
 
 const ProduitDashboard = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [menuOuvert, setMenuOuvert] = useState(false);
-    const cargandoDatosRef = useRef(false);
+    const chargementDonnees = useRef(false);
 
     const [familleUuid] = useState<string | null>(() => {
         const token = localStorage.getItem('token');
@@ -54,11 +52,10 @@ const ProduitDashboard = () => {
     }, [listeProduits]);
 
     const fetchListeProduitsAndFamille = useCallback(async () => {
-        if (!familleUuid || cargandoDatosRef.current) return;
+        if (!familleUuid || chargementDonnees.current) return;
         try {
             setError('');
-            setIsLoading(true);
-            cargandoDatosRef.current = true;
+            chargementDonnees.current = true;
 
             const tasks = [];
             if (!getValidCachedProduits(familleUuid)) {
@@ -79,9 +76,6 @@ const ProduitDashboard = () => {
             } else {
                 setError('Une erreur inattendue est survenue.');
             }
-        } finally {
-            setIsLoading(false);
-            cargandoDatosRef.current = false;
         }
     }, [familleUuid]);
     const handleRefreshProduits = async () => {
@@ -91,7 +85,6 @@ const ProduitDashboard = () => {
         setMenuOuvert(false);
 
         try {
-            setIsLoading(true);
             setError('');
             const data = await fetchAndCacheProduits(familleUuid);
             setListeProduits(data);
@@ -101,8 +94,6 @@ const ProduitDashboard = () => {
             } else {
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
-        } finally {
-            setIsLoading(false);
         }
     };
     const handleRefresh = async () => {
@@ -124,7 +115,7 @@ const ProduitDashboard = () => {
             localStorage.removeItem(`dashboard_refresh_cooldown_${familleUuid}`);
         }
 
-        if (!familleUuid || isLoading || cargandoDatosRef.current) return;
+        if (!familleUuid || chargementDonnees.current) return;
 
         const hasProduits = !!getValidCachedProduits(familleUuid);
         const hasFamille = !!getValidCachedFamille(familleUuid);
@@ -135,7 +126,7 @@ const ProduitDashboard = () => {
             };
             void initDashboard();
         }
-    }, [familleUuid, fetchListeProduitsAndFamille, cooldown, isLoading]);
+    }, [familleUuid, fetchListeProduitsAndFamille, cooldown]);
 
     const totalProducts = stats.total || 1;
     const barreProgress = [
@@ -161,7 +152,7 @@ const ProduitDashboard = () => {
                     <div className="absolute inset-0 bg-slate-800/20 backdrop-blur-sm z-20 "
                         onClick={switchMenuOuvert} />
                 )}
-                <div className="absolute bottom-18 right-3 flex flex-col items-end gap-3 z-50 select-none">
+                <div className="absolute bottom-18 right-3 flex flex-col items-end gap-3 z-40 select-none">
                     {menuOuvert && (
                         <div className="menu-options-enfant">
                             <span className="menu-options-item" onClick={() => navigate('/produits/creation')}>
@@ -238,7 +229,6 @@ const ProduitDashboard = () => {
                     </div>
                 </div>
             </>)}
-            {isLoading && <LoadingModal title={"Connexion en cours..."}/>}
         </div>
     );
 };

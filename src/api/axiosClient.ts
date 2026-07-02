@@ -1,5 +1,6 @@
 import axios, {AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig} from "axios";
 import type {ErreurResponseDto} from "../features/auth/types";
+import {loadingEvent} from "../utils/LoadingEvent.ts";
 
 
 const axiosClient: AxiosInstance = axios.create({
@@ -13,6 +14,7 @@ const axiosClient: AxiosInstance = axios.create({
 
 axiosClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) =>{
+        loadingEvent.show();
         const token = localStorage.getItem('token');
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -20,15 +22,18 @@ axiosClient.interceptors.request.use(
         return config;
     },
     (error) => {
+        loadingEvent.hide();
         return Promise.reject(error);
     }
 );
 
 axiosClient.interceptors.response.use(
     (response: AxiosResponse) => {
+        loadingEvent.hide();
         return response;
     },
     (error: AxiosError<ErreurResponseDto>) => {
+        loadingEvent.hide();
         console.error('API Error: ', error.response?.data?.message || error.message);
 
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {

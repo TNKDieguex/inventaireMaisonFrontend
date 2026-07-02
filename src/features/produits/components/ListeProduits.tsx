@@ -5,13 +5,11 @@ import {useNavigate} from "react-router-dom";
 import ItemProduit from "./ItemProduit.tsx";
 import axios from "axios";
 import type {ErreurResponseDto} from "../../auth/types";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 import {fetchAndCacheProduits} from "../../../utils/ProduitCache.ts";
 import Button from "../../../components/Button.tsx";
 
 const ListeProduits = () => {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
     const [categorieSelectionnee, setCategorieSelectionnee] = useState<string>('TOUS');
@@ -26,7 +24,6 @@ const ListeProduits = () => {
     const fetchListeProduits = useCallback(async () => {
         if (!familleUuid) return;
         try {
-            setIsLoading(true);
             const data = await fetchAndCacheProduits(familleUuid);
             setListeProduits(data);
         } catch (erreur: unknown) {
@@ -35,8 +32,6 @@ const ListeProduits = () => {
             } else {
                 setError('Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
             }
-        } finally {
-            setIsLoading(false);
         }
     }, [familleUuid]);
 
@@ -126,7 +121,6 @@ const ListeProduits = () => {
                     )}
                 </div>
             </>)}
-            {isLoading && <LoadingModal title="Mise à jour de la liste..." />}
         </div>
     );
 };

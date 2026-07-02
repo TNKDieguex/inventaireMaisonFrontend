@@ -13,6 +13,30 @@ export const fetchAndCacheProduits = async (familleUuid: string): Promise<Produi
 
 export const creerProduits = async (familleUuid: string|null, listeProduits: CreateProduitDto[]): Promise<ProduitDto[]> => {
     const response = await axiosClient.post<ProduitDto[]>('/produits/creation', listeProduits);
-    sessionStorage.removeItem(`produits_famille_${familleUuid}`);
+    if (familleUuid) {
+        const cacheKey = `produits_famille_${familleUuid}`;
+        const cacheExistante = sessionStorage.getItem(cacheKey);
+        if (cacheExistante) {
+            try {
+                const cacheContainer = JSON.parse(cacheExistante);
+                if (cacheContainer && Array.isArray(cacheContainer.data)) {
+                    const nouveauProduit = Array.isArray(response.data) ? response.data : [response.data];
+                    cacheContainer.data = [...cacheContainer.data, ...nouveauProduit];
+                    cacheContainer.timestamp = Date.now();
+                    sessionStorage.setItem(cacheKey, JSON.stringify(cacheContainer));
+                } else {
+                    const nouveauProduits = Array.isArray(response.data) ? response.data : [response.data];
+                    sessionStorage.setItem(cacheKey, JSON.stringify({ data: nouveauProduits, timestamp: Date.now() }));
+                }
+            } catch (error) {
+                console.error("Error al actualizar el contenedor de caché:", error);
+                const nouveauProduits = Array.isArray(response.data) ? response.data : [response.data];
+                sessionStorage.setItem(cacheKey, JSON.stringify({ data: nouveauProduits, timestamp: Date.now() }));
+            }
+        } else {
+            const nouveauProduits = Array.isArray(response.data) ? response.data : [response.data];
+            sessionStorage.setItem(cacheKey, JSON.stringify({ data: nouveauProduits, timestamp: Date.now() }));
+        }
+    }
     return response.data;
 };

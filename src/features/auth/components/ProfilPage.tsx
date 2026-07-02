@@ -1,5 +1,4 @@
 import {useState} from "react";
-import LoadingModal from "../../../components/LoadingModal.tsx";
 import type {AuthResponseDto, ErreurResponseDto, UserData} from "../types";
 import {getFamilleIdFromToken, getUserInfoFromToken, getValidCachedFamille} from "../../../utils/jwtUtils.ts";
 import Button from "../../../components/Button.tsx";
@@ -9,7 +8,6 @@ import axios from "axios";
 
 const ProfilPage = () => {
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [showConfirmQuitter, setShowConfirmQuitter] = useState(false);
     const navigate = useNavigate();
 
@@ -44,7 +42,6 @@ const ProfilPage = () => {
     const handleQuitterFamille = async () => {
         try {
             setError('');
-            setIsLoading(true);
             setShowConfirmQuitter(false);
 
             const response = await axiosClient.post<AuthResponseDto>(`/utilisateurs/quitter-famille`);
@@ -61,8 +58,6 @@ const ProfilPage = () => {
             } else {
                 setError('Une erreur inattendue est survenue.');
             }
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -146,7 +141,6 @@ const ProfilPage = () => {
                     </div>
                 </div>
             )}
-            {isLoading && <LoadingModal title="Chargement de votre profil..." />}
         </div>
     );
 };
